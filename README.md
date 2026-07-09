@@ -2,9 +2,9 @@
 Love Dramatic Piano Academy DX Ultra Super Game
 
 # TEAM MEMBERS:
-BERNARDINO, ADRIEL O. -  adriel-bernardino
-CLOMA JR. MARK D. - markclomajr
-TOLENTINO AMANDA PARIS DOMINIQUE L.  - AmandaLeeTolentino
+- BERNARDINO, ADRIEL O. -  adriel-bernardino
+- CLOMA JR. MARK D. - markclomajr
+- TOLENTINO AMANDA PARIS DOMINIQUE L.  - AmandaLeeTolentino
 
 
 # PROBLEM STATEMENT & GOALS:
