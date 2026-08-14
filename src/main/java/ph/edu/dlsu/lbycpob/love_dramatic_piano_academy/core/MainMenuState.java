@@ -2,8 +2,12 @@ package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.SpawnData;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class MainMenuState {
@@ -22,21 +26,37 @@ public class MainMenuState {
         // Understand: Create Background using BackgroundManager entity world spawner
         FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "mainMenu.png"));
 
-        // Understand: Setup Title via FXGL UIFactoryService
-        titleText = FXGL.getUIFactoryService().newText("OOP RHYTHM NOVEL", 40);
-        titleText.setTranslateX(200);
-        titleText.setTranslateY(200);
+        // Understand: Use FXGL's text factory, but UNBIND the font to prevent the JavaFX crash
+        titleText = FXGL.getUIFactoryService().newText("Love Dramatic Piano Academy", 100);
+        titleText.fontProperty().unbind();
+        titleText.setFont(Font.font("Impact", 100));
+        titleText.setFill(Color.WHITE);
 
-        // Understand: Create Buttons via FXGL UIFactoryService
+        // Understand: Calculate horizontal center, but move the vertical position higher on the screen
+        double titleCenterX = (FXGL.getAppWidth() - titleText.getLayoutBounds().getWidth()) / 2;
+        double titleHigherY = (FXGL.getAppHeight() / 2.0) - 200; // Offset by 200 pixels upwards
+
+        // Understand: Apply the translated coordinates
+        titleText.setTranslateX(titleCenterX);
+        titleText.setTranslateY(titleHigherY);
+
+        // Understand: Create Buttons via FXGL UIFactoryService to keep the lightning hover effects
         Button newGameBtn = FXGL.getUIFactoryService().newButton("New Game");
         Button loadGameBtn = FXGL.getUIFactoryService().newButton("Load Game");
         Button quitBtn = FXGL.getUIFactoryService().newButton("Quit");
 
+        // Understand: Use ColorAdjust to make them darker WITHOUT breaking the FXGL CSS animations
+        ColorAdjust darkenEffect = new ColorAdjust();
+        darkenEffect.setBrightness(-0.6); // Adjust from 0.0 to -1.0 to make it darker
+
+        newGameBtn.setEffect(darkenEffect);
+        loadGameBtn.setEffect(darkenEffect);
+        quitBtn.setEffect(darkenEffect);
+
         // Understand: Set Button Actions
         newGameBtn.setOnAction(e -> {
             System.out.println("Starting New Game...");
-            cleanup(); // Remove the menu UI
-            // TODO: Add logic here to start your game level/scene
+            // TODO: Add logic here to load saved game data
         });
 
         loadGameBtn.setOnAction(e -> {
@@ -49,12 +69,15 @@ public class MainMenuState {
             FXGL.getGameController().exit();
         });
 
-        // Understand: Layout the Buttons in a Vertical Box
+        // Understand: Layout the Buttons in a Vertical Box, ensuring inner items are centered
         menuBox = new VBox(15, newGameBtn, loadGameBtn, quitBtn);
-        menuBox.setTranslateX(280);
-        menuBox.setTranslateY(260);
+        menuBox.setAlignment(Pos.CENTER);
 
-        // Understand: Add UI elements to Scene (Background is handled via World Entity z-index)
+        // Understand: Position the VBox horizontally centered, and a little below the vertical center
+        menuBox.setTranslateX((FXGL.getAppWidth() / 2.0) - 100); // 100 is approx half the button width
+        menuBox.setTranslateY((FXGL.getAppHeight() / 2.0) + 50); // 50 pixels below exact center
+
+        // Understand: Add UI elements to Scene
         FXGL.addUINode(titleText);
         FXGL.addUINode(menuBox);
     }
