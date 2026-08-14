@@ -10,6 +10,14 @@ public class MainMenuState {
     private Text titleText;
     private VBox menuBox;
 
+    // Understand: Holds a reference to the controller interface
+    private final CoreSceneManager sceneController;
+
+    // Understand: NEW CONSTRUCTOR - Requires the controller to be passed in when created
+    public MainMenuState(CoreSceneManager sceneController) {
+        this.sceneController = sceneController;
+    }
+
     public void start() {
         // Understand: Create Background using BackgroundManager entity world spawner
         FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "mainMenu.png"));
