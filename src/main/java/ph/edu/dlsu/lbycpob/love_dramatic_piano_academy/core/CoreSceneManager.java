@@ -45,7 +45,9 @@ public class CoreSceneManager implements SceneController {
         cleanupCurrentState();
         currentState = LoveDramaticApp.GameState.VISUAL_NOVEL;
         System.out.println("Switching to Visual Novel State...");
-        // vnState.start(); // Uncomment when start is added to VNState
+
+        // Hardcoding to start at line 0 for the sake of the dummy test.
+        vnState.start(0);
     }
 
     @Override
