@@ -4,7 +4,8 @@ import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.rhythm.RhythmState;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SceneController;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.vn.VNState;
 
-// Understand: A separate controller class dedicated to managing state transitions
+import java.util.List;
+
 public class CoreSceneManager implements SceneController {
 
     private final MainMenuState mainMenu;
@@ -14,47 +15,56 @@ public class CoreSceneManager implements SceneController {
     private LoveDramaticApp.GameState currentState = LoveDramaticApp.GameState.MAIN_MENU;
 
     public CoreSceneManager() {
-        // Understand: Instantiate the states here and pass this controller to them
         this.mainMenu = new MainMenuState(this);
-        this.vnState = new VNState();
-        this.rhythmState = new RhythmState();
+        this.vnState = new VNState(this);
+        this.rhythmState = new RhythmState(this);
     }
 
-    // Understand: Called by the main app to boot up the initial state
     public void startInitialState() {
+        GlobalAudioManager.getInstance().playMainMenuTheme();
         mainMenu.start();
     }
 
-    // Understand: Cleans up the active state before moving to the next
     private void cleanupCurrentState() {
         switch (currentState) {
             case MAIN_MENU:
                 mainMenu.cleanup();
                 break;
             case VISUAL_NOVEL:
-                // vnState.cleanup(); // Uncomment when cleanup is added to VNState
+                vnState.cleanup();
                 break;
             case RHYTHM_GAME:
-                // rhythmState.cleanup(); // Uncomment when cleanup is added to RhythmState
+                rhythmState.cleanup();
                 break;
         }
     }
 
+    public void switchToMainMenu() {
+        cleanupCurrentState();
+        currentState = LoveDramaticApp.GameState.MAIN_MENU;
+        GlobalAudioManager.getInstance().playMainMenuTheme();
+        mainMenu.start();
+    }
+
     @Override
     public void switchToVisualNovel() {
+        switchToVisualNovelAtLine(0);
+    }
+
+    public void switchToVisualNovelAtLine(int lineIndex) {
         cleanupCurrentState();
         currentState = LoveDramaticApp.GameState.VISUAL_NOVEL;
-        System.out.println("Switching to Visual Novel State...");
-
-        // Hardcoding to start at line 0 for the sake of the dummy test.
-        vnState.start(0);
+        vnState.start(lineIndex);
     }
 
     @Override
     public void switchToRhythmGame() {
+        switchToRhythmGame(List.of("Playing piano..."), 0, "becauseIntro.MP3");
+    }
+
+    public void switchToRhythmGame(List<String> dialogueLines, int resumeLineIndex, String songTrack) {
         cleanupCurrentState();
         currentState = LoveDramaticApp.GameState.RHYTHM_GAME;
-        System.out.println("Switching to Rhythm Game State...");
-        // rhythmState.start(); // Uncomment when start is added to RhythmState
+        rhythmState.start(dialogueLines, resumeLineIndex, songTrack);
     }
 }
