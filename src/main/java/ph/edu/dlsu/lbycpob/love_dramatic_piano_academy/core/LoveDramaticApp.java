@@ -35,8 +35,9 @@ public class LoveDramaticApp extends GameApplication {
         vnState = new VNState();
         rhythmState = new RhythmState();
 
+    }
 
-
-
+    public static void main(String[] args) {
+        launch(args);
     }
 }
