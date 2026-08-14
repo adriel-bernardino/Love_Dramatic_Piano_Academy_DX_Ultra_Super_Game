@@ -2,6 +2,7 @@ package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.dsl.FXGL;
 import javafx.scene.text.Text;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.rhythm.RhythmState;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.vn.VNState;
@@ -31,9 +32,16 @@ public class LoveDramaticApp extends GameApplication {
 
     @Override
     protected void initGame() {
+
+        // Understand: Register entity factories centrally
+        FXGL.getGameWorld().addEntityFactory(new BackgroundManager());
+
         mainMenu = new MainMenuState();
         vnState = new VNState();
         rhythmState = new RhythmState();
+
+        // Understand: Start the Main Menu state on initial launch
+        mainMenu.start();
 
     }
 
