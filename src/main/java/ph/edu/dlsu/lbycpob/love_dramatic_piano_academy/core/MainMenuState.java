@@ -30,11 +30,11 @@ public class MainMenuState {
         titleText = FXGL.getUIFactoryService().newText("Love Dramatic Piano Academy", 100);
         titleText.fontProperty().unbind();
         titleText.setFont(Font.font("Impact", 100));
-        titleText.setFill(Color.WHITE);
+        titleText.setFill(Color.BLANCHEDALMOND);
 
         // Understand: Calculate horizontal center, but move the vertical position higher on the screen
         double titleCenterX = (FXGL.getAppWidth() - titleText.getLayoutBounds().getWidth()) / 2;
-        double titleHigherY = (FXGL.getAppHeight() / 2.0) - 200; // Offset by 200 pixels upwards
+        double titleHigherY = (FXGL.getAppHeight() / 2.0) - 220; // Offset by 50 pixels upwards
 
         // Understand: Apply the translated coordinates
         titleText.setTranslateX(titleCenterX);
@@ -75,7 +75,7 @@ public class MainMenuState {
 
         // Understand: Position the VBox horizontally centered, and a little below the vertical center
         menuBox.setTranslateX((FXGL.getAppWidth() / 2.0) - 100); // 100 is approx half the button width
-        menuBox.setTranslateY((FXGL.getAppHeight() / 2.0) + 50); // 50 pixels below exact center
+        menuBox.setTranslateY((FXGL.getAppHeight() / 2.0) + 200); // 50 pixels below exact center
 
         // Understand: Add UI elements to Scene
         FXGL.addUINode(titleText);
