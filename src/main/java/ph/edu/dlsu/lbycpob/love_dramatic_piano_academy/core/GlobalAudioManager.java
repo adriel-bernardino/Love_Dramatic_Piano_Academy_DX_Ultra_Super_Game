@@ -63,7 +63,22 @@ public class GlobalAudioManager implements AudioService {
     public void playMainMenuTheme() {
         playMusic("Naalala Ka.mp3");
     }
-    
+
+    public void pauseMusic() {
+        if (mediaPlayer != null && mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+            mediaPlayer.pause();
+            isPaused = true;
+            System.out.println("Audio Paused.");
+        }
+    }
+
+    public void resumeMusic() {
+        if (mediaPlayer != null && isPaused) {
+            mediaPlayer.play();
+            isPaused = false;
+            System.out.println("Audio Resumed.");
+        }
+    }
 
     @Override
     public void stopMusic() {
@@ -86,5 +101,25 @@ public class GlobalAudioManager implements AudioService {
         }
     }
 
+    // Understand: Crucial for Rhythm Game note-fall sync and timing verification
+    public double getCurrentTimestampSeconds() {
+        if (mediaPlayer != null) {
+            return mediaPlayer.getCurrentTime().toSeconds();
+        }
+        return 0.0;
+    }
 
+    public void seekTo(double seconds) {
+        if (mediaPlayer != null) {
+            mediaPlayer.seek(Duration.seconds(seconds));
+        }
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public String getCurrentTrackName() {
+        return currentTrackName;
+    }
 }
