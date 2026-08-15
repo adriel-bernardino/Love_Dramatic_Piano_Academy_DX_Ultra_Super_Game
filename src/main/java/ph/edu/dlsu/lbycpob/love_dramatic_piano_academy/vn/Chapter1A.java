@@ -144,7 +144,7 @@ public class Chapter1A extends AbstractChapter {
 
                         // Show the dialogue box and let the player use its built-in Save/Load/Quit buttons
                         dialogueManager.show();
-                        dialogueManager.setLine("System", "This is the end of the currently available chapters. Thank you for playing! Please use the buttons below to Save, Load, or Quit.");
+                        dialogueManager.setLine("System", "This is the end of the currently available chapters. Thank you for playing! Please use the buttons below to Save or Quit.");
                     }
             );
             return;
@@ -164,15 +164,16 @@ public class Chapter1A extends AbstractChapter {
         if (sprite2Overlay != null) { sprite2Overlay.destroy(); sprite2Overlay = null; }
     }
 
+    // Understand: Here's how to customize sprites
     private void processSprites(String line) {
         String sprite1Path = extractTag(line, "SPRITE_1");
         if (sprite1Path != null) {
             sprite1Path = sprite1Path.replace("textures/", "");
             if (sprite1Overlay == null) {
-                sprite1Overlay = new CharacterSprite("Sprite1", sprite1Path, 950, 180);
+                sprite1Overlay = new CharacterSprite("Sprite1", sprite1Path, 1200, 400);
 
                 // Understand: Pre-scale the sprite using the updated method before popping it in
-                sprite1Overlay.setScale(2.2, 2.2);
+                sprite1Overlay.setScale(0.75, 0.75);
                 sprite1Overlay.popIn(500.0);
             } else {
                 sprite1Overlay.setSprite(sprite1Path);
@@ -187,10 +188,10 @@ public class Chapter1A extends AbstractChapter {
         if (sprite2Path != null) {
             sprite2Path = sprite2Path.replace("textures/", "");
             if (sprite2Overlay == null) {
-                sprite2Overlay = new CharacterSprite("Sprite2", sprite2Path, 250, 180);
+                sprite2Overlay = new CharacterSprite("Sprite2", sprite2Path, 1200, 400);
 
                 // Understand: Pre-scale the sprite using the updated method before popping it in
-                sprite2Overlay.setScale(2.2, 2.2);
+                sprite2Overlay.setScale(0.75, 0.75);
                 sprite2Overlay.popIn(500.0);
             } else {
                 sprite2Overlay.setSprite(sprite2Path);
