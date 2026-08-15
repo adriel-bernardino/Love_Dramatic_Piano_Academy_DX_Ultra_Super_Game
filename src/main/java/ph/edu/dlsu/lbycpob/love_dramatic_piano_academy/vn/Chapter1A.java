@@ -170,7 +170,8 @@ public class Chapter1A extends AbstractChapter {
         if (sprite1Path != null) {
             sprite1Path = sprite1Path.replace("textures/", "");
             if (sprite1Overlay == null) {
-                sprite1Overlay = new CharacterSprite("Sprite1", sprite1Path, 1200, 400);
+                // Understand: negative places them higher, kinda weird but o
+                sprite1Overlay = new CharacterSprite("Sprite1", sprite1Path, 200, -350);
 
                 // Understand: Pre-scale the sprite using the updated method before popping it in
                 sprite1Overlay.setScale(0.75, 0.75);
@@ -188,7 +189,7 @@ public class Chapter1A extends AbstractChapter {
         if (sprite2Path != null) {
             sprite2Path = sprite2Path.replace("textures/", "");
             if (sprite2Overlay == null) {
-                sprite2Overlay = new CharacterSprite("Sprite2", sprite2Path, 1200, 400);
+                sprite2Overlay = new CharacterSprite("Sprite2", sprite2Path, 800, -350);
 
                 // Understand: Pre-scale the sprite using the updated method before popping it in
                 sprite2Overlay.setScale(0.75, 0.75);

@@ -38,7 +38,7 @@ public class RhythmState {
         subText = FXGL.getUIFactoryService().newText(contextText, 24);
         subText.setFill(Color.LIGHTGRAY);
         subText.setTranslateX(100);
-        subText.setTranslateY(FXGL.getAppHeight() - 400);
+        subText.setTranslateY(FXGL.getAppHeight() - 300);
 
         // Position the skip button at the top right
         skipBtn = FXGL.getUIFactoryService().newButton("Skip Song");
