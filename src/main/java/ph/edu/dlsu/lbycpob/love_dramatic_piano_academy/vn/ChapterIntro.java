@@ -3,21 +3,16 @@ package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.vn;
 import com.almasb.fxgl.dsl.FXGL;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.CoreSceneManager;
 
-import java.util.Arrays;
-
 public class ChapterIntro extends AbstractChapter {
 
     private final DialogueManager dialogueManager = new DialogueManager();
     private final ChoicePrompt choicePrompt = new ChoicePrompt();
+    private boolean isTransitioning = false;
 
     public ChapterIntro(CoreSceneManager sceneManager) {
         super(sceneManager);
-        this.script = Arrays.asList(
-                "[001] [CHECKPOINT] [BG: textures/VNbgs/playerSoloWide.png] [AUDIO: music/mainTheme.mp3] | Narration: The third-floor practice room is dim, illuminated only by a pale patch of moonlight on the wooden floorboards.",
-                "[002] [BG: textures/VNbgs/playerSoloWide.png] | Narration: Kepler sits idle on the bench, resting his hands on the frame of the upright piano.",
-                "[003] [BG: textures/VNbgs/playerSoloWide.png] | Narration: He flips through a scattered pile of sheet music, stopping when a worn score catches his eye: Because by The Beatles.",
-                "[CHOICE_PROMPT]"
-        );
+        // Understand: Loads the parsed script to read the asset file instead of hardcoded strings
+        loadScript("Chapter0");
     }
 
     @Override
@@ -37,6 +32,8 @@ public class ChapterIntro extends AbstractChapter {
 
     @Override
     protected void advanceScript() {
+        // Understand: Prevent user skipping while screen is fading
+        if (isTransitioning) return;
         if (currentLineIndex < script.size() - 1) {
             currentLineIndex++;
             processCurrentLine();
@@ -45,8 +42,16 @@ public class ChapterIntro extends AbstractChapter {
 
     // Understand: jumps straight to the choice prompt line, used by Skip
     private void skipToChoice() {
-        currentLineIndex = script.size() - 1;
-        processCurrentLine();
+        if (isTransitioning) return;
+
+        // Understand: Find the index of the first choice line dynamically
+        for (int i = 0; i < script.size(); i++) {
+            if (script.get(i).contains("Option 1")) {
+                currentLineIndex = i;
+                processCurrentLine();
+                return;
+            }
+        }
     }
 
     @Override
@@ -57,14 +62,15 @@ public class ChapterIntro extends AbstractChapter {
             lastCheckpointLine = currentLineIndex;
         }
 
-        if (line.equals("[CHOICE_PROMPT]")) {
+        // Understand: Catch choices automatically from the parsed script lines
+        if (line.contains("Option 1") || line.contains("Option 2")) {
             dialogueManager.hide();
             var opts = ChoicePrompt.options();
-            opts.put("Option 1: Play 'Because'", () -> {
+            opts.put("Play 'Because'", () -> {
                 choicePrompt.cleanup();
                 sceneManager.switchToVisualNovelFull(1, 'A', 0);
             });
-            opts.put("Option 2: Keep Waiting Silently", () -> {
+            opts.put("Keep Waiting Silently", () -> {
                 choicePrompt.cleanup();
                 sceneManager.switchToVisualNovelFull(1, 'B', 0);
             });
@@ -72,8 +78,26 @@ public class ChapterIntro extends AbstractChapter {
             return;
         }
 
+        // Understand: Trigger black screen fade based on the tag detection
+        if (isBlackScreen(line)) {
+            isTransitioning = true;
+            dialogueManager.hide();
+            performFadeTransition(
+                    () -> {
+                        checkAndSetBackground(line);
+                        checkAndPlayAudio(line);
+                    },
+                    () -> {
+                        isTransitioning = false;
+                        advanceScript(); // Understand: Automatically advance past the black screen
+                    }
+            );
+            return;
+        }
+
         checkAndSetBackground(line);
         checkAndPlayAudio(line);
+        dialogueManager.show();
 
         String[] parts = line.split("\\| ");
         String dialogue = parts.length > 1 ? parts[1] : "";
