@@ -97,6 +97,83 @@ public class Chapter1B extends AbstractChapter{
         }
     }
 
+    //understand: reads sprite tags from script line and updates the character sprites on screen
+    private void processSprites(String line) {
+
+        //understand: looks for a SPRITE_1 tag and gets the image path stored in it
+        String sprite1Path = extractTag(line, "SPRITE_1");
+
+        if (sprite1Path != null) {
+
+            //understand: remove "textures/" cuz CharacterSprite uses a path relative to the textures folder
+            sprite1Path = sprite1Path.replace("textures/", "");
+
+            if (sprite1Overlay == null) {
+
+                //understand: create first character sprite if one does not exist yet
+                sprite1Overlay = new CharacterSprite(
+                        "Sprite1",
+                        sprite1Path,
+                        200,
+                        -350
+                );
+
+                //understand: scale sprite to make it fit the visual novel screen
+                sprite1Overlay.setScale(0.75, 0.75);
+                sprite1Overlay.popIn(500.0);
+
+            } else {
+
+                //decision: reuse existing sprite object instead of creating new one every time the char's expression changes
+                sprite1Overlay.setSprite(sprite1Path);
+
+                //understand: make sure existing sprite is visible
+                sprite1Overlay.getEntity().setVisible(true);
+            }
+
+        } else if (sprite1Overlay != null) {
+
+            //understand: if the current line has no SPRITE_1 tag, remove the previous sprite
+            sprite1Overlay.destroy();
+
+            //understand: set the reference to null because sprite no longer exists
+            sprite1Overlay = null;
+        }
+
+
+        //understand: looks for a SPRITE_2 tag and gets its image path
+        String sprite2Path = extractTag(line, "SPRITE_2");
+
+        if (sprite2Path != null) {
+
+            //understand: remove "textures/" because CharacterSprite uses a textures-relative path
+            sprite2Path = sprite2Path.replace("textures/", "");
+
+            if (sprite2Overlay == null) {
+
+                //understand: create the second character sprite if does not exist yet
+                sprite2Overlay = new CharacterSprite(
+                        "Sprite2",
+                        sprite2Path,
+                        800,
+                        -350
+                );
+
+                //understand: scale the sprite to fit the screen
+                sprite2Overlay.setScale(0.75, 0.75);
+                sprite2Overlay.popIn(500.0);
+
+            } else {
+                sprite2Overlay.setSprite(sprite2Path);
+                sprite2Overlay.getEntity().setVisible(true);
+            }
+
+        } else if (sprite2Overlay != null) {
+            sprite2Overlay.destroy();
+            sprite2Overlay = null;
+        }
+    }
+
     @Override
     protected void advanceScript() {
         //understand: prevent advancing during transitions or after the route ends
