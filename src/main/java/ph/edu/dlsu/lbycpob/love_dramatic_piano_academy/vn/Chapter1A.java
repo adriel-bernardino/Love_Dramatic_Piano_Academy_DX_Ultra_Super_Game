@@ -92,9 +92,8 @@ public class Chapter1A extends AbstractChapter {
             if (sprite1Overlay == null) sprite1Overlay = new CharacterSprite("Sprite1", sprite1Path, 1200, 200);
             else sprite1Overlay.setSprite(sprite1Path);
 
-            // Understand this is to resize the sprites
-            sprite1Overlay.setScale(0.25, 0.25);
-            sprite1Overlay.popIn(1.0);
+            // Understand this is to add animation
+            sprite1Overlay.popIn(10.0);
 
         } else if (sprite1Overlay != null) {
             sprite1Overlay.destroy();
