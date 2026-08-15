@@ -74,6 +74,8 @@ public class CoreSceneManager implements SceneController {
 
     public void switchToVisualNovelFull(int chapter, char route, int lineIndex) {
         cleanupCurrentState();
+        // Understand: Explicitly stop any menu music when entering the VN state
+        GlobalAudioManager.getInstance().stopMusic();
         this.activeChapter = chapter;
         this.activeRoute = route;
         this.currentState = LoveDramaticApp.GameState.VISUAL_NOVEL;
@@ -82,6 +84,8 @@ public class CoreSceneManager implements SceneController {
 
     public void switchToVisualNovelAtLine(int lineIndex) {
         cleanupCurrentState();
+        // Understand: Explicitly stop any menu music when entering the VN state
+        GlobalAudioManager.getInstance().stopMusic();
         this.currentState = LoveDramaticApp.GameState.VISUAL_NOVEL;
         vnState.start(activeChapter, activeRoute, lineIndex);
     }
@@ -97,24 +101,26 @@ public class CoreSceneManager implements SceneController {
         rhythmState.start(dialogueLines, resumeLineIndex, songTrack);
     }
 
-    // Understand: Now cleans up the VN state and stops music so the Save screen is totally isolated
     public void switchToSaveMenu(int chapterId, char route, int checkpointLine) {
         cleanupCurrentState();
-        GlobalAudioManager.getInstance().stopMusic();
+        // Understand: Play main menu theme instead of stopping audio; GlobalAudioManager ensures it won't restart if already playing
+        GlobalAudioManager.getInstance().playMainMenuTheme();
         currentState = LoveDramaticApp.GameState.SAVE_MENU;
         saveMenuState.start(chapterId, route, checkpointLine);
     }
 
     public void switchToLoadMenu() {
         cleanupCurrentState();
-        GlobalAudioManager.getInstance().stopMusic();
+        // Understand: Play main menu theme instead of stopping audio; GlobalAudioManager ensures it won't restart if already playing
+        GlobalAudioManager.getInstance().playMainMenuTheme();
         currentState = LoveDramaticApp.GameState.LOAD_MENU;
         loadMenuState.start();
     }
 
-    // Understand: Because we destroyed the VN state to open the Save Menu cleanly, we must rebuild it from the checkpoint.
     public void resumeVisualNovel(int chapterId, char route, int checkpointLine) {
         cleanupCurrentState();
+        // Understand: Explicitly stop menu music when returning to the VN state from a menu
+        GlobalAudioManager.getInstance().stopMusic();
         this.activeChapter = chapterId;
         this.activeRoute = route;
         this.currentState = LoveDramaticApp.GameState.VISUAL_NOVEL;
