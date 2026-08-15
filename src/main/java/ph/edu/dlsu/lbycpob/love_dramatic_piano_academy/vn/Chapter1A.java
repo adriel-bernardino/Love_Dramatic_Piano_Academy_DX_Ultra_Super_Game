@@ -37,4 +37,83 @@ public class Chapter1A extends AbstractChapter {
         processCurrentLine();
     }
 
+    @Override
+    protected void advanceScript() {
+        if (currentLineIndex < script.size() - 1) {
+            currentLineIndex++;
+            processCurrentLine();
+        }
+    }
+
+    @Override
+    protected void processCurrentLine() {
+        String line = script.get(currentLineIndex);
+
+        if (line.contains("[CHECKPOINT]")) {
+            lastCheckpointLine = currentLineIndex;
+        }
+
+        checkAndSetBackground(line);
+        checkAndPlayAudio(line);
+        processSprites(line);
+
+        String eventType = extractTag(line, "EVENT_TYPE");
+        if ("rhythm_start".equals(eventType)) {
+            cleanupUiOnly();
+            List<String> rhythmDialogue = new ArrayList<>();
+            rhythmDialogue.add("Rhythm sequence initiating...");
+            String audioTrack = extractTag(line, "AUDIO").replace("music/", "");
+            sceneManager.switchToRhythmGame(rhythmDialogue, currentLineIndex + 1, audioTrack);
+            return;
+        } else if ("route_end".equals(eventType)) {
+            cleanupUiOnly();
+            sceneManager.switchToMainMenu();
+            return;
+        }
+
+        String[] parts = line.split("\\| ");
+        String dialogue = parts.length > 1 ? parts[1] : "";
+        String speaker = dialogue.contains(":") ? dialogue.split(":", 2)[0] : "Narration";
+        dialogueManager.setLine(speaker, dialogue);
+    }
+
+    // Understand: fixes the earlier double-cleanup bug — this only tears down UI/sprites,
+    // it does NOT call itself again; CoreSceneManager's cleanupCurrentState() handles the rest
+    private void cleanupUiOnly() {
+        dialogueManager.cleanup();
+        if (sprite1Overlay != null) { sprite1Overlay.destroy(); sprite1Overlay = null; }
+        if (sprite2Overlay != null) { sprite2Overlay.destroy(); sprite2Overlay = null; }
+    }
+
+    private void processSprites(String line) {
+        String sprite1Path = extractTag(line, "SPRITE_1");
+        if (sprite1Path != null) {
+            sprite1Path = sprite1Path.replace("textures/", "");
+            if (sprite1Overlay == null) sprite1Overlay = new CharacterSprite("Sprite1", sprite1Path, 1200, 200);
+            else sprite1Overlay.setSprite(sprite1Path);
+
+            // Understand this is to resize the sprites
+            sprite1Overlay.setScale(0.25, 0.25);
+            sprite1Overlay.popIn(1.0);
+
+        } else if (sprite1Overlay != null) {
+            sprite1Overlay.destroy();
+            sprite1Overlay = null;
+        }
+
+        String sprite2Path = extractTag(line, "SPRITE_2");
+        if (sprite2Path != null) {
+            sprite2Path = sprite2Path.replace("textures/", "");
+            if (sprite2Overlay == null) sprite2Overlay = new CharacterSprite("Sprite2", sprite2Path, 400, 200);
+            else sprite2Overlay.setSprite(sprite2Path);
+        } else if (sprite2Overlay != null) {   // <- the missing branch from before, now fixed
+            sprite2Overlay.destroy();
+            sprite2Overlay = null;
+        }
+    }
+
+    @Override
+    public void cleanup() {
+        cleanupUiOnly();
+    }
 }
