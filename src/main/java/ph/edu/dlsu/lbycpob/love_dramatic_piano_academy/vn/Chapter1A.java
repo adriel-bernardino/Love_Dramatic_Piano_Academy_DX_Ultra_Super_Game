@@ -13,6 +13,9 @@ public class Chapter1A extends AbstractChapter {
     private CharacterSprite sprite2Overlay;
     private boolean isTransitioning = false;
 
+    // Understand: New flag to prevent auto-advancing past the end screen
+    private boolean hasReachedEnd = false;
+
     public Chapter1A(CoreSceneManager sceneManager) {
         super(sceneManager);
         // Understand: Loads the parsed script to read the asset file instead of hardcoded strings
@@ -23,11 +26,13 @@ public class Chapter1A extends AbstractChapter {
     public void start(int startingLine) {
         this.currentLineIndex = startingLine;
         this.lastCheckpointLine = startingLine;
+        this.hasReachedEnd = false;
 
         dialogueManager.build(
                 this::skipToNextEvent,
                 () -> sceneManager.switchToSaveMenu(1, 'A', lastCheckpointLine),
-                () -> com.almasb.fxgl.dsl.FXGL.getGameController().exit(),
+                // Understand: Changed from .exit() to return to the Main Menu
+                () -> sceneManager.switchToMainMenu(),
                 this::advanceScript
         );
 
@@ -45,7 +50,8 @@ public class Chapter1A extends AbstractChapter {
 
     // Understand: Skips to the NEXT rhythm game or the end of the route, whichever comes first
     private void skipToNextEvent() {
-        if (isTransitioning) return;
+        // Understand: Block skipping if we hit the end of the chapter
+        if (isTransitioning || hasReachedEnd) return;
 
         // Start searching from the next line onwards
         for (int i = currentLineIndex + 1; i < script.size(); i++) {
@@ -60,7 +66,8 @@ public class Chapter1A extends AbstractChapter {
 
     @Override
     protected void advanceScript() {
-        if (isTransitioning) return;
+        // Understand: Block the Fast Forward feature from advancing into a gray screen
+        if (isTransitioning || hasReachedEnd) return;
         if (currentLineIndex < script.size() - 1) {
             currentLineIndex++;
             processCurrentLine();
@@ -130,6 +137,8 @@ public class Chapter1A extends AbstractChapter {
 
         } else if ("route_end".equals(eventType)) {
             isTransitioning = true;
+            // Understand: Lock advancement right here to prevent reading the next blackScreen tag
+            hasReachedEnd = true;
             dialogueManager.hide();
 
             performFadeTransition(
