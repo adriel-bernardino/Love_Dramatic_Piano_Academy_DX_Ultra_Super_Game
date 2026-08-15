@@ -368,6 +368,7 @@ public class Chapter1B extends AbstractChapter{
 
     @Override
     public void cleanup() {
-
+        //understand: remove all VN UI and sprites when leaving Route B
+        cleanupUiOnly();
     }
 }
