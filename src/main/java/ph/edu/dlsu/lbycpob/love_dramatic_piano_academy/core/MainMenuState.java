@@ -71,21 +71,10 @@ public class MainMenuState {
         });
 
         loadGameBtn.setOnAction(e -> {
-            System.out.println("Loading Game...");
-
-            // Understand: Loads slot 1 by default for this integration.
-            // In a fully built load menu, you would list available slots here.
-            int slotToLoad = 1;
-            SaveData loadedData = saveManager.loadGame(slotToLoad);
-
-            if (loadedData != null) {
-                System.out.println("Game loaded successfully. Chapter: " + loadedData.chapter() + " Route: " + loadedData.route());
-
-                // Understand: Transitions to the visual novel state using the loaded data context
-                sceneController.switchToVisualNovel();
-            } else {
-                System.out.println("No save data found in slot " + slotToLoad + ". Please start a New Game.");
-            }
+            System.out.println("Opening Load Menu...");
+            // Understand: Properly routes to the dedicated Load Menu State and STOPS.
+            // The LoadMenuState itself will handle the actual loading logic now.
+            sceneController.switchToLoadMenu();
         });
 
         quitBtn.setOnAction(e -> {
