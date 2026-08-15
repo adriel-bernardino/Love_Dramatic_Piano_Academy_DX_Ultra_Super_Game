@@ -9,6 +9,9 @@ public class ChapterIntro extends AbstractChapter {
     private final ChoicePrompt choicePrompt = new ChoicePrompt();
     private boolean isTransitioning = false;
 
+    // Understand: New flag to prevent auto-advancing past the choice prompt
+    private boolean hasReachedEnd = false;
+
     public ChapterIntro(CoreSceneManager sceneManager) {
         super(sceneManager);
         // Understand: Loads the parsed script to read the asset file instead of hardcoded strings
@@ -19,6 +22,7 @@ public class ChapterIntro extends AbstractChapter {
     public void start(int startingLine) {
         this.currentLineIndex = startingLine;
         this.lastCheckpointLine = startingLine;
+        this.hasReachedEnd = false;
 
         dialogueManager.build(
                 this::skipToChoice,
@@ -33,8 +37,8 @@ public class ChapterIntro extends AbstractChapter {
 
     @Override
     protected void advanceScript() {
-        // Understand: Prevent user skipping while screen is fading
-        if (isTransitioning) return;
+        // Understand: Prevent user skipping while screen is fading or at the end
+        if (isTransitioning || hasReachedEnd) return;
         if (currentLineIndex < script.size() - 1) {
             currentLineIndex++;
             processCurrentLine();
@@ -43,7 +47,7 @@ public class ChapterIntro extends AbstractChapter {
 
     // Understand: jumps straight to the choice prompt line, used by Skip
     private void skipToChoice() {
-        if (isTransitioning) return;
+        if (isTransitioning || hasReachedEnd) return;
 
         // Understand: Find the index of the first choice line dynamically
         for (int i = 0; i < script.size(); i++) {
@@ -65,6 +69,7 @@ public class ChapterIntro extends AbstractChapter {
 
         // Understand: Catch choices automatically from the parsed script lines
         if (line.contains("Option 1") || line.contains("Option 2")) {
+            hasReachedEnd = true; // Understand: Lock advancement right here
             dialogueManager.hide();
             var opts = ChoicePrompt.options();
             opts.put("Play 'Because'", () -> {
