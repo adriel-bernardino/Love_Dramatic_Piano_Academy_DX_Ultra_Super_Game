@@ -98,8 +98,54 @@ public class Chapter1B extends AbstractChapter{
 
     @Override
     protected void processCurrentLine() {
+        //understand: gets current story line using the current index
+        String line = script.get(currentLineIndex);
 
+        //decision: checkpoints are stored in script so content and save points can be changed w/o changing the code
+        if (line.contains("[CHECKPOINT]")) {
+            //understand: remembers the current line as latest safe save point
+            lastCheckpointLine = currentLineIndex;
+        }
+
+        //understand: checks whether this line represents a black-screen scene transition
+        if (isBlackScreen(line)) {
+
+            //understand: marks that a transition is happening
+            isTransitioning = true;
+
+            //decision: hide dialogue during transition so the old dialogue not visible while the scene changes
+            dialogueManager.hide();
+
+            //understand: hide the first character sprite if it currently exists
+            if (sprite1Overlay != null) {
+                sprite1Overlay.getEntity().setVisible(false);
+            }
+            //understand: hide the second character sprite if it currently exists
+            if (sprite2Overlay != null) {
+                sprite2Overlay.getEntity().setVisible(false);
+            }
+
+            performFadeTransition(
+                    () -> {
+                        //understand: changes background while the screen is hidden
+                        checkAndSetBackground(line);
+
+                        //understand: starts any audio specified by this script line
+                        checkAndPlayAudio(line);
+                    },
+                    () -> {
+                        //understand: marks transition as finished
+                        isTransitioning = false;
+
+                        //understand: moves to next line after the transition finishes
+                        advanceScript();
+                    }
+            );
+            //decision: stop here because the transition will handle advancing the script after fade finishes
+            return;
+        }
     }
+
 
     @Override
     public void cleanup() {
