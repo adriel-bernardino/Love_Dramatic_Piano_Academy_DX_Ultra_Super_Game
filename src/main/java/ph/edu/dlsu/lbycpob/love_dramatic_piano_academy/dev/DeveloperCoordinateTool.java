@@ -16,6 +16,9 @@ import java.util.Optional;
 
 public class DeveloperCoordinateTool extends GameApplication {
 
+
+    /// REMEMBER (0,0) in java is the top left corner of objects
+
     private ImageView imageView;
 
     @Override
