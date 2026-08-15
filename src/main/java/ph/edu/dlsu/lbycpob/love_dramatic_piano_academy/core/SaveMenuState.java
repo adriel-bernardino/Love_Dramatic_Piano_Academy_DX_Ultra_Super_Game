@@ -4,6 +4,8 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.SpawnData;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SaveData;
 
 // Understand: Dedicated state for saving to multiple slots using checkpoint data
@@ -12,6 +14,7 @@ public class SaveMenuState {
     private final CoreSceneManager sceneManager;
     private final SaveManager saveManager;
     private VBox uiBox;
+    private Rectangle dimOverlay;
 
     private int pendingChapterId;
     private char pendingRoute;
@@ -29,6 +32,10 @@ public class SaveMenuState {
 
         // Understand: Spawns the dedicated main menu background
         FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "mainMenu.png"));
+
+        // Understand: Add a semi-transparent black overlay to dim the background
+        dimOverlay = new Rectangle(FXGL.getAppWidth(), FXGL.getAppHeight(), Color.color(0, 0, 0, 0.6));
+        FXGL.addUINode(dimOverlay);
 
         uiBox = new VBox(15);
         uiBox.setTranslateX(FXGL.getAppWidth() / 2.0 - 100);
@@ -55,6 +62,7 @@ public class SaveMenuState {
     }
 
     public void cleanup() {
+        if (dimOverlay != null) FXGL.removeUINode(dimOverlay);
         if (uiBox != null) FXGL.removeUINode(uiBox);
         // Understand: The background entity is handled by CoreSceneManager's getEntitiesCopy() wipe
     }
