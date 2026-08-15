@@ -31,6 +31,9 @@ public abstract class AbstractChapter {
     // Understand: Tracks the last safe line to save the game (checkpoint system)
     protected int lastCheckpointLine = 0;
 
+    // Understand: Tracks active fades to prevent concurrent overlapping transitions from stacking
+    private boolean isFading = false;
+
     public AbstractChapter(CoreSceneManager sceneManager) {
         this.sceneManager = sceneManager;
         this.audioManager = GlobalAudioManager.getInstance();
@@ -84,6 +87,10 @@ public abstract class AbstractChapter {
 
     // Understand: A unified fade transition to handle "Black Screen" events and chapter spacing without breaking BackgroundManager
     protected void performFadeTransition(Runnable onMiddle, Runnable onFinished) {
+        // Understand: Lock transition to prevent multiple fades if skip/next is mashed
+        if (isFading) return;
+        isFading = true;
+
         Rectangle fadeRect = new Rectangle(FXGL.getAppWidth(), FXGL.getAppHeight(), Color.BLACK);
         fadeRect.setOpacity(0);
         FXGL.addUINode(fadeRect);
@@ -104,6 +111,7 @@ public abstract class AbstractChapter {
 
         ftOut.setOnFinished(e -> {
             FXGL.removeUINode(fadeRect);
+            isFading = false;
             if (onFinished != null) onFinished.run();
         });
 
