@@ -15,7 +15,7 @@ public class BackgroundManager implements EntityFactory {
         // Understand: Reads "imageName" from SpawnData if present, otherwise default to "VNbgs/placeholder.png"
         String imageName = data.hasKey("imageName")
                 ? data.get("imageName")
-                : "VNbgs/placeholder.png";
+                : "VNbgs/mainMenu.png";
 
         // Understand: Sets background to the custom one defined in imageName
         Texture bg = FXGL.texture(imageName);
