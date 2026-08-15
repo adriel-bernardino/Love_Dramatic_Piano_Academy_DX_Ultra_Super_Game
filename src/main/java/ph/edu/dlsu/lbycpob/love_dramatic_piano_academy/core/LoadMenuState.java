@@ -1,6 +1,7 @@
 package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.SpawnData;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SaveData;
@@ -18,6 +19,9 @@ public class LoadMenuState {
     }
 
     public void start() {
+        // Understand: Spawns the dedicated main menu background
+        FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "mainMenu.png"));
+
         uiBox = new VBox(15);
         uiBox.setTranslateX(FXGL.getAppWidth() / 2.0 - 100);
         uiBox.setTranslateY(FXGL.getAppHeight() / 2.0 - 100);
