@@ -82,6 +82,21 @@ public class Chapter1B extends AbstractChapter{
         }
     }
 
+    //understand: cleans VN UI and sprites w/o cleaning the whole game state
+    private void cleanupUiOnly() {
+        dialogueManager.cleanup();
+
+        if (sprite1Overlay != null) {
+            sprite1Overlay.destroy();
+            sprite1Overlay = null;
+        }
+
+        if (sprite2Overlay != null) {
+            sprite2Overlay.destroy();
+            sprite2Overlay = null;
+        }
+    }
+
     @Override
     protected void advanceScript() {
         //understand: prevent advancing during transitions or after the route ends
