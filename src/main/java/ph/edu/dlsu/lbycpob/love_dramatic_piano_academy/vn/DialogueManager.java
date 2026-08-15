@@ -62,9 +62,10 @@ public class DialogueManager {
         StackPane.setAlignment(bodyText, Pos.TOP_LEFT);
         StackPane.setMargin(bodyText, new Insets(TEXT_PADDING + 10, TEXT_PADDING, TEXT_PADDING, TEXT_PADDING));
 
-        // Understand: Spawns top-right quick controls styled to match dialogue box color palette
-        nextBtn = new Button("Next ►");
-        fastForwardBtn = new Button("Fast Forward ►►");
+        // Understand: Uses FXGL UI factory buttons matching the bottom button style
+        nextBtn = FXGL.getUIFactoryService().newButton("Next ►");
+        fastForwardBtn = FXGL.getUIFactoryService().newButton("Fast Forward ►►");
+
         applyTopButtonStyle(nextBtn, false);
         applyTopButtonStyle(fastForwardBtn, false);
 
@@ -93,8 +94,13 @@ public class DialogueManager {
     }
 
     private void applyTopButtonStyle(Button btn, boolean active) {
-        String bg = active ? "rgba(200, 200, 200, 0.95)" : "rgba(235, 235, 235, 0.92)";
-        btn.setStyle("-fx-background-color: " + bg + "; -fx-text-fill: #000000; -fx-font-family: 'Palatino'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: rgba(160, 160, 160, 0.5); -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 4 10 4 10; -fx-cursor: hand;");
+        ColorAdjust darken = new ColorAdjust();
+        // Keep active state brighter, inactive state darkened to match bottom buttons
+        darken.setBrightness(active ? 0.1 : -0.4);
+        btn.setEffect(darken);
+
+        // Scaled to 15px font with adjusted padding (larger than original 13px, but smaller than default FXGL buttons)
+        btn.setStyle("-fx-font-size: 15px; -fx-padding: 6 14 6 14; -fx-cursor: hand;");
     }
 
     private void buildButtonBar() {
