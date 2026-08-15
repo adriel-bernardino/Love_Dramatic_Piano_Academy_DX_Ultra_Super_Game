@@ -1,5 +1,6 @@
 package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.vn;
 
+import com.almasb.fxgl.entity.SpawnData;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.CoreSceneManager;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class Chapter1A extends AbstractChapter {
         this.lastCheckpointLine = startingLine;
 
         dialogueManager.build(
-                () -> { currentLineIndex = script.size() - 1; processCurrentLine(); },
+                this::skipToNextEvent,
                 () -> sceneManager.switchToSaveMenu(1, 'A', lastCheckpointLine),
                 () -> com.almasb.fxgl.dsl.FXGL.getGameController().exit(),
                 this::advanceScript
@@ -40,6 +41,21 @@ public class Chapter1A extends AbstractChapter {
                     processCurrentLine();
                 }
         );
+    }
+
+    // Understand: Skips to the NEXT rhythm game or the end of the route, whichever comes first
+    private void skipToNextEvent() {
+        if (isTransitioning) return;
+
+        // Start searching from the next line onwards
+        for (int i = currentLineIndex + 1; i < script.size(); i++) {
+            String line = script.get(i);
+            if (line.contains("rhythm_start") || line.contains("route_end")) {
+                currentLineIndex = i;
+                processCurrentLine();
+                return;
+            }
+        }
     }
 
     @Override
@@ -88,23 +104,48 @@ public class Chapter1A extends AbstractChapter {
         String eventType = extractTag(line, "EVENT_TYPE");
         if ("rhythm_start".equals(eventType)) {
             cleanupUiOnly();
+
+            // Extract the dialogue lines specifically attached to the rhythm block
             List<String> rhythmDialogue = new ArrayList<>();
-            rhythmDialogue.add("Rhythm sequence initiating...");
+            String[] parts = line.split("\\| ");
+            for (int i = 1; i < parts.length; i++) {
+                rhythmDialogue.add(parts[i].trim());
+            }
+
+            // Fallback just in case
+            if (rhythmDialogue.isEmpty()) {
+                rhythmDialogue.add("System: Rhythm sequence initiating...");
+            }
 
             String audioTrack = extractTag(line, "AUDIO");
-            if (audioTrack != null) audioTrack = audioTrack.replace("music/", "");
-            else audioTrack = "becauseIntro.MP3";
+            if (audioTrack != null) {
+                audioTrack = audioTrack.replace("music/", "");
+            } else {
+                audioTrack = "becauseIntro.MP3";
+            }
 
+            // Sends the extracted dialogue, the next scene index, and the track name to the Rhythm Game
             sceneManager.switchToRhythmGame(rhythmDialogue, currentLineIndex + 1, audioTrack);
             return;
+
         } else if ("route_end".equals(eventType)) {
             isTransitioning = true;
             dialogueManager.hide();
 
-            // Understand: Graceful exit spacing transitioning back to main menu
             performFadeTransition(
-                    this::cleanupUiOnly,
-                    sceneManager::switchToMainMenu
+                    () -> {
+                        if (sprite1Overlay != null) { sprite1Overlay.destroy(); sprite1Overlay = null; }
+                        if (sprite2Overlay != null) { sprite2Overlay.destroy(); sprite2Overlay = null; }
+
+                        com.almasb.fxgl.dsl.FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "VNbgs/dialogueBG.png"));
+                    },
+                    () -> {
+                        isTransitioning = false;
+
+                        // Show the dialogue box and let the player use its built-in Save/Load/Quit buttons
+                        dialogueManager.show();
+                        dialogueManager.setLine("System", "This is the end of the currently available chapters. Thank you for playing! Please use the buttons below to Save, Load, or Quit.");
+                    }
             );
             return;
         }
@@ -128,11 +169,10 @@ public class Chapter1A extends AbstractChapter {
         if (sprite1Path != null) {
             sprite1Path = sprite1Path.replace("textures/", "");
             if (sprite1Overlay == null) {
-                // Understand: Instantiated at (950, 100) and scaled to 2.2x to match the concept UI reference
-                sprite1Overlay = new CharacterSprite("Sprite1", sprite1Path, 950, 100);
-                sprite1Overlay.setScale(2.2, 2.2);
+                sprite1Overlay = new CharacterSprite("Sprite1", sprite1Path, 950, 180);
 
-                // Understand this is to add animation
+                // Understand: Pre-scale the sprite using the updated method before popping it in
+                sprite1Overlay.setScale(2.2, 2.2);
                 sprite1Overlay.popIn(500.0);
             } else {
                 sprite1Overlay.setSprite(sprite1Path);
@@ -147,8 +187,9 @@ public class Chapter1A extends AbstractChapter {
         if (sprite2Path != null) {
             sprite2Path = sprite2Path.replace("textures/", "");
             if (sprite2Overlay == null) {
-                // Understand: Also scale the second sprite
-                sprite2Overlay = new CharacterSprite("Sprite2", sprite2Path, 300, 100);
+                sprite2Overlay = new CharacterSprite("Sprite2", sprite2Path, 250, 180);
+
+                // Understand: Pre-scale the sprite using the updated method before popping it in
                 sprite2Overlay.setScale(2.2, 2.2);
                 sprite2Overlay.popIn(500.0);
             } else {
@@ -156,7 +197,6 @@ public class Chapter1A extends AbstractChapter {
                 sprite2Overlay.getEntity().setVisible(true);
             }
         } else if (sprite2Overlay != null) {
-            // <- the missing branch from before, now fixed
             sprite2Overlay.destroy();
             sprite2Overlay = null;
         }
