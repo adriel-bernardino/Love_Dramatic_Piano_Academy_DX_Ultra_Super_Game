@@ -23,7 +23,8 @@ public class ChapterIntro extends AbstractChapter {
         dialogueManager.build(
                 this::skipToChoice,
                 () -> sceneManager.switchToSaveMenu(0, 'A', lastCheckpointLine),
-                () -> FXGL.getGameController().exit(),
+                // Understand: Changed from .exit() to return to the Main Menu
+                () -> sceneManager.switchToMainMenu(),
                 this::advanceScript
         );
 
