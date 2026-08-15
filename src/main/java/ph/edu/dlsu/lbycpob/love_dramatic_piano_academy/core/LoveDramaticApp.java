@@ -7,7 +7,7 @@ import com.almasb.fxgl.dsl.FXGL;
 public class LoveDramaticApp extends GameApplication {
 
     // Understand: Keep the enum here so it can be referenced globally if needed
-    public enum GameState { MAIN_MENU, VISUAL_NOVEL, RHYTHM_GAME }
+    public enum GameState { MAIN_MENU, VISUAL_NOVEL, RHYTHM_GAME, SAVE_MENU, LOAD_MENU }
 
     // Understand: various variables that will be needed throughout the game
     private int storyChapter = 0;
