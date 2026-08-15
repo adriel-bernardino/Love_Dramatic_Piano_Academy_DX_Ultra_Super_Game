@@ -26,6 +26,25 @@ public class Chapter1B extends AbstractChapter{
 
     }
 
+    //understand: skips to the next rhythm section or the end of the route
+    private void skipToNextEvent() {
+        //understand: prevents skipping during transitions or after the route ends
+        if (isTransitioning || hasReachedEnd) return;
+
+        //understand: search only lines after the current line
+        for (int i = currentLineIndex + 1; i < script.size(); i++) {
+
+            String line = script.get(i);
+
+            //understand: stop when the next major event is found
+            if (line.contains("rhythm_start") || line.contains("route_end")) {
+                currentLineIndex = i;
+                processCurrentLine();
+                return;
+            }
+        }
+    }
+
     @Override
     protected void advanceScript() {
 
