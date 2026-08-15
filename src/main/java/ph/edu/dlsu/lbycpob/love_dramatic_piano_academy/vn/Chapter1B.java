@@ -84,7 +84,16 @@ public class Chapter1B extends AbstractChapter{
 
     @Override
     protected void advanceScript() {
+        //understand: prevent advancing during transitions or after the route ends
+        if (isTransitioning || hasReachedEnd) return;
 
+        //understand: stops the index from going past the final script line
+        if (currentLineIndex < script.size() - 1) {
+            currentLineIndex++;
+
+            //understand: process new line after advancing
+            processCurrentLine();
+        }
     }
 
     @Override
