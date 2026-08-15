@@ -5,12 +5,14 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.UserAction;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.Optional;
 
 public class DeveloperCoordinateTool extends GameApplication {
 
@@ -27,7 +29,6 @@ public class DeveloperCoordinateTool extends GameApplication {
 
     @Override
     protected void initInput() {
-        // Track mouse clicks globally
         FXGL.getInput().addAction(new UserAction("Click Coordinate") {
             @Override
             protected void onActionBegin() {
@@ -39,14 +40,20 @@ public class DeveloperCoordinateTool extends GameApplication {
                     return;
                 }
 
-                // Use FXGL's built-in dialog service for the prompt
-                FXGL.getDialogService().showInputBox(
-                        "Coordinate Clicked: X=" + x + " | Y=" + y + "\nEnter a label for this coordinate (or hit cancel):",
-                        input -> input.matches(".*"), // Allow any string
-                        name -> {
-                            System.out.println("Coordinate Saved -> [" + name + "] X: " + x + " | Y: " + y);
-                        }
-                );
+                // Use standard JavaFX TextInputDialog for proper cancel/close support
+                TextInputDialog dialog = new TextInputDialog("");
+                dialog.setTitle("Save Coordinate");
+                dialog.setHeaderText("Coordinate Clicked: X=" + x + " | Y=" + y);
+                dialog.setContentText("Enter a label for this coordinate:");
+
+                // This blocks until the user clicks OK, Cancel, or the window's X button
+                Optional<String> result = dialog.showAndWait();
+
+                result.ifPresent(name -> {
+                    if (!name.trim().isEmpty()) {
+                        System.out.println("Coordinate Saved -> [" + name + "] X: " + x + " | Y: " + y);
+                    }
+                });
             }
         }, MouseButton.PRIMARY);
     }
@@ -57,8 +64,15 @@ public class DeveloperCoordinateTool extends GameApplication {
         imageView = new ImageView();
         FXGL.addUINode(imageView);
 
+        // Rainbow CSS string
+        String rainbowStyle = "-fx-background-color: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet); " +
+                "-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; " +
+                "-fx-border-color: white; -fx-border-width: 2px; " +
+                "-fx-border-radius: 5px; -fx-background-radius: 5px;";
+
         // Load Asset Button
         Button loadBtn = FXGL.getUIFactoryService().newButton("Load Asset");
+        loadBtn.setStyle(rainbowStyle);
         loadBtn.setTranslateX(10);
         loadBtn.setTranslateY(10);
         loadBtn.setOnAction(e -> {
@@ -75,7 +89,6 @@ public class DeveloperCoordinateTool extends GameApplication {
                     new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
             );
 
-            // Using null as the owner window works perfectly in FXGL
             File selectedFile = fileChooser.showOpenDialog(null);
             if (selectedFile != null) {
                 imageView.setImage(new Image(selectedFile.toURI().toString()));
@@ -84,6 +97,7 @@ public class DeveloperCoordinateTool extends GameApplication {
 
         // Quit Button
         Button quitBtn = FXGL.getUIFactoryService().newButton("Quit");
+        quitBtn.setStyle(rainbowStyle);
         quitBtn.setTranslateX(200); // Placed to the right of the load button
         quitBtn.setTranslateY(10);
         quitBtn.setOnAction(e -> FXGL.getGameController().exit());
