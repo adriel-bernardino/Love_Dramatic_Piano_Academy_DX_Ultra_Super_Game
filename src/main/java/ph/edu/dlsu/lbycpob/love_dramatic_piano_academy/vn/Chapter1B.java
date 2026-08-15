@@ -236,6 +236,133 @@ public class Chapter1B extends AbstractChapter{
             //decision: stop here because the transition will handle advancing the script after fade finishes
             return;
         }
+
+        //understand: checks ifline contains a background tag and updates it
+        checkAndSetBackground(line);
+
+        //understand: checks whether line contains an audio tag and plays it
+        checkAndPlayAudio(line);
+
+        //understand: checks line for character sprite tags and updates the sprites
+        processSprites(line);
+
+        //understand: makes the dialogue UI visible for normal dialogue
+        dialogueManager.show();
+
+        //understand: checks whether line contains a special event such as rhythm_start
+        String eventType = extractTag(line, "EVENT_TYPE");
+
+        if ("rhythm_start".equals(eventType)) {
+
+            //decision: remove the VN UI before switching to the rhythm game so two game states do not display on top of each other
+            cleanupUiOnly();
+
+            //understand: creates a list to hold dialogue that will appear during rhythm mode
+            List<String> rhythmDialogue = new ArrayList<>();
+            String[] parts = line.split("\\| ");
+
+            //decision: starts at index 1 because index 0 contains the line/event information
+            for (int i = 1; i < parts.length; i++) {
+                rhythmDialogue.add(parts[i].trim());
+            }
+
+            //understand: gives rhythm mode default dialogue if the script provides none
+            if (rhythmDialogue.isEmpty()) {
+                rhythmDialogue.add("System: Rhythm sequence initiating...");
+            }
+
+            //understand: gets audio file specified by the current script line
+            String audioTrack = extractTag(line, "AUDIO");
+
+            if (audioTrack != null) {
+                //understand: remove "music/" because RhythmState only needs the filename
+                audioTrack = audioTrack.replace("music/", "");
+
+            } else {
+                //understand: uses a fallback song if no audio file was specified
+                audioTrack = "becauseIntro.MP3";
+            }
+            sceneManager.switchToRhythmGame(
+                    rhythmDialogue,
+
+                    //understand: tells rhythm mode which VN line to return to afterward
+                    currentLineIndex + 1,
+
+                    //understand: tells rhythm mode which song to play
+                    audioTrack
+            );
+
+            //decision: stop processing this VN line because control has been handed to rhythm game
+            return;
+
+        } else if ("route_end".equals(eventType)) {
+
+            //understand: marks that a scene transition is currently happening
+            isTransitioning = true;
+
+            //decision: prevent chapter from processing any lines after the route_end event
+            hasReachedEnd = true;
+
+            //understand: hides dialogue before the ending transition
+            dialogueManager.hide();
+
+            performFadeTransition(
+                    () -> {
+
+                        //understand: remove the first character from the scene
+                        if (sprite1Overlay != null) {
+                            sprite1Overlay.destroy();
+                            sprite1Overlay = null;
+                        }
+
+                        //understand: remove the second character from the scene
+                        if (sprite2Overlay != null) {
+                            sprite2Overlay.destroy();
+                            sprite2Overlay = null;
+                        }
+
+                        //decision: replace the previous scene with a simple background
+                        //for the route-ending message
+                        com.almasb.fxgl.dsl.FXGL.spawn(
+                                "background",
+                                new SpawnData(0, 0)
+                                        .put("imageName", "VNbgs/dialogueBG.png")
+                        );
+                    },
+                    () -> {
+
+                        //understand: the fade transition has finished
+                        isTransitioning = false;
+
+                        //understand: show the dialogue UI again for the ending message
+                        dialogueManager.show();
+
+                        //understand: display a fixed message indicating that the route has ended
+                        dialogueManager.setLine(
+                                "System",
+                                "This is the end of the currently available chapters. Thank you for playing! Please use the buttons below to Save or Quit."
+                        );
+                    }
+            );
+
+            //decision: stop processing because route_end is the final state of this chapter
+            return;
+        }
+        String[] parts = line.split("\\| ");
+
+        //understand: gets the dialogue portion after the "|" separator
+        String dialogue = parts.length > 1 ? parts[1] : "";
+
+        //understand: checks whether the dialogue contains a speaker name
+        String speaker = dialogue.contains(":")
+                //understand: splits only at the first ":" so the rest remains part of the dialogue
+                ? dialogue.split(":", 2)[0]
+
+                //understand: uses Narration when no speaker name is provided
+                : "Narration";
+
+        //understand: sends the speaker and dialogue text to the dialogue UI
+        dialogueManager.setLine(speaker, dialogue);
     }
 
 
