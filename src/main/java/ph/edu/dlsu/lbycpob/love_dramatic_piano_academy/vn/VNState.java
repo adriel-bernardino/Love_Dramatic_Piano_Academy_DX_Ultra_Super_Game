@@ -18,6 +18,9 @@ public class VNState {
             currentChapterLogic = new ChapterIntro(sceneManager);
         } else if (chapterId == 1 && route == 'A') {
             currentChapterLogic = new Chapter1A(sceneManager);
+        }
+        else if (chapterId == 1 && route == 'B') {
+            currentChapterLogic = new Chapter1B(sceneManager);
         } else {
             System.err.println("Chapter/Route combination not found!");
             return;
