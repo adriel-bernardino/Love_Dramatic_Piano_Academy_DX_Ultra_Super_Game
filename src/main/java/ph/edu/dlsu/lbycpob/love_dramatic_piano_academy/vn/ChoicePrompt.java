@@ -4,6 +4,8 @@ import com.almasb.fxgl.dsl.FXGL;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,9 +15,13 @@ import java.util.Map;
 public class ChoicePrompt {
 
     private VBox box;
+    private Rectangle darkOverlay;
 
     // Understand: options is label -> action, preserving insertion order (min 2, but extendable to any count)
     public void show(Map<String, Runnable> options) {
+        // Understand: Creates a full-screen semi-transparent darkening backdrop behind the choice prompts
+        darkOverlay = new Rectangle(FXGL.getAppWidth(), FXGL.getAppHeight(), Color.rgb(0, 0, 0, 0.75));
+
         box = new VBox(18);
         box.setAlignment(Pos.CENTER);
 
@@ -28,10 +34,16 @@ public class ChoicePrompt {
         box.setTranslateX(FXGL.getAppWidth() / 2.0 - 160);
         box.setTranslateY(FXGL.getAppHeight() / 2.0 - (options.size() * 30));
 
+        // Understand: Add the dimming overlay to the UI first so it renders behind the button menu
+        FXGL.addUINode(darkOverlay);
         FXGL.addUINode(box);
     }
 
     public void cleanup() {
+        if (darkOverlay != null) {
+            FXGL.removeUINode(darkOverlay);
+            darkOverlay = null;
+        }
         if (box != null) {
             FXGL.removeUINode(box);
             box = null;
