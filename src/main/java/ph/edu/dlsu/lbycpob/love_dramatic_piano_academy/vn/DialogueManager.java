@@ -16,14 +16,17 @@ import javafx.util.Duration;
 public class DialogueManager {
 
     private static final double BOX_MARGIN_X = 60, BOX_WIDTH = 1800, BOX_HEIGHT = 260, BOX_BOTTOM_MARGIN = 40, TEXT_PADDING = 40;
-    private static final double NORMAL_SPEED_SEC = 0.025;
+    private static final double NORMAL_SPEED_SEC = 0.025, FAST_SPEED_SEC = 0.005;
 
     private StackPane dialogueBox;
     private VBox speakerTag;
     private Text speakerText, bodyText;
     private HBox buttonBar;
 
-    // Understand: Typewriter state tracking character index and interval timer
+    // Understand: Top-right visual controls for quick manual navigation and automated fast forwarding
+    private Button nextBtn, fastForwardBtn;
+    private boolean isFastForwarding = false;
+
     private String targetText = "";
     private int charIndex = 0;
     private TimerAction typewriterTimer;
@@ -59,14 +62,39 @@ public class DialogueManager {
         StackPane.setAlignment(bodyText, Pos.TOP_LEFT);
         StackPane.setMargin(bodyText, new Insets(TEXT_PADDING + 10, TEXT_PADDING, TEXT_PADDING, TEXT_PADDING));
 
-        dialogueBox = new StackPane(bodyText);
+        // Understand: Spawns top-right quick controls styled to match dialogue box color palette
+        nextBtn = new Button("Next ►");
+        fastForwardBtn = new Button("Fast Forward ►►");
+        applyTopButtonStyle(nextBtn, false);
+        applyTopButtonStyle(fastForwardBtn, false);
+
+        nextBtn.setOnAction(e -> { e.consume(); handleAdvance(); });
+        fastForwardBtn.setOnAction(e -> {
+            e.consume();
+            isFastForwarding = !isFastForwarding;
+            applyTopButtonStyle(fastForwardBtn, isFastForwarding);
+            if (isFastForwarding) {
+                if (charIndex < targetText.length()) startTypewriter();
+                else if (onAdvance != null) onAdvance.run();
+            }
+        });
+
+        HBox topRightControls = new HBox(8, nextBtn, fastForwardBtn);
+        topRightControls.setAlignment(Pos.TOP_RIGHT);
+        StackPane.setAlignment(topRightControls, Pos.TOP_RIGHT);
+        StackPane.setMargin(topRightControls, new Insets(12, 20, 0, 0));
+
+        dialogueBox = new StackPane(bodyText, topRightControls);
         dialogueBox.setPrefSize(BOX_WIDTH, BOX_HEIGHT);
         dialogueBox.setStyle("-fx-background-color: rgba(235,235,235,0.92); -fx-background-radius: 12;");
         dialogueBox.setTranslateX(BOX_MARGIN_X);
         dialogueBox.setTranslateY(FXGL.getAppHeight() - BOX_HEIGHT - BOX_BOTTOM_MARGIN);
-
-        // Understand: clicking anywhere on the box handles finishing typing or advancing script
         dialogueBox.setOnMouseClicked(e -> handleAdvance());
+    }
+
+    private void applyTopButtonStyle(Button btn, boolean active) {
+        String bg = active ? "rgba(200, 200, 200, 0.95)" : "rgba(235, 235, 235, 0.92)";
+        btn.setStyle("-fx-background-color: " + bg + "; -fx-text-fill: #000000; -fx-font-family: 'Palatino'; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: rgba(160, 160, 160, 0.5); -fx-border-radius: 4; -fx-background-radius: 4; -fx-padding: 4 10 4 10; -fx-cursor: hand;");
     }
 
     private void buildButtonBar() {
@@ -111,15 +139,21 @@ public class DialogueManager {
         if (!targetText.isEmpty()) startTypewriter();
     }
 
-    // Understand: Progressively prints dialogue text character by character using FXGL game timer
+    // Understand: Controls typewriter interval speed and automatically triggers scene advancement when fast forwarding
     private void startTypewriter() {
         stopTypewriter();
+        double interval = isFastForwarding ? FAST_SPEED_SEC : NORMAL_SPEED_SEC;
         typewriterTimer = FXGL.getGameTimer().runAtInterval(() -> {
             if (charIndex < targetText.length()) {
                 charIndex++;
                 bodyText.setText(targetText.substring(0, charIndex));
-            } else stopTypewriter();
-        }, Duration.seconds(NORMAL_SPEED_SEC));
+            } else {
+                stopTypewriter();
+                if (isFastForwarding && onAdvance != null) {
+                    FXGL.getGameTimer().runOnceAfter(onAdvance, Duration.seconds(0.15));
+                }
+            }
+        }, Duration.seconds(interval));
     }
 
     private void handleAdvance() {
