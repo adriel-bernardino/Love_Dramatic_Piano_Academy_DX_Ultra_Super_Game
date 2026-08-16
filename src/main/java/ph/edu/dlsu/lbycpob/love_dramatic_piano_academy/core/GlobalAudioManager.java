@@ -5,6 +5,10 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.AudioService;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
+import javafx.scene.media.AudioClip;
+import java.net.URL;
+import java.util.EnumMap;
+import java.util.Map;
 
 import java.net.URL;
 
@@ -17,13 +21,44 @@ public class GlobalAudioManager implements AudioService {
     private double currentSpeed = 1.0;
     private boolean isPaused = false;
 
-    private GlobalAudioManager() {}
+    //understand: stores already loaded sound effects so they can play immediately
+    private final Map<SoundEffect, AudioClip> soundEffects =
+            new EnumMap<>(SoundEffect.class);
+
+    private GlobalAudioManager() {
+        //understand: preload all sound effects once when the audio manager is created
+        loadSoundEffects();
+    }
 
     public static synchronized GlobalAudioManager getInstance() {
         if (instance == null) {
             instance = new GlobalAudioManager();
         }
         return instance;
+    }
+
+    private void loadSoundEffects() {
+
+        //understand: go through every sound effect defined in the enum
+        for (SoundEffect effect : SoundEffect.values()) {
+
+            //understand: build the path to the sound file
+            String path = "/assets/sfx/" + effect.getFileName();
+
+            //understand: find the file inside the resources folder
+            URL resource = getClass().getResource(path);
+
+            if (resource == null) {
+                System.err.println("SFX Error: Sound effect not found at " + path);
+                continue;
+            }
+
+            //decision: AudioClip for short sounds because it can play w/o creating new MediaPlayer every time
+            AudioClip clip = new AudioClip(resource.toExternalForm());
+
+            //understand: store the loaded clip so it can be reused immediately
+            soundEffects.put(effect, clip);
+        }
     }
 
     @Override
@@ -95,38 +130,16 @@ public class GlobalAudioManager implements AudioService {
 
     @Override
     public void playSoundEffect(SoundEffect soundEffect) {
-        //understand: get filename of requested SFX
-        String fileName = soundEffect.getFileName();
 
-        try {
+        //understand: retrieve the sound effect that was already loaded
+        AudioClip clip = soundEffects.get(soundEffect);
 
-            //understand: sound effects are stored separately from background music
-            String path = "/assets/sfx/" + fileName;
+        if (clip != null) {
+            clip.play();//understand: play the preloaded sound immediately
 
-            //understand: find sound file inside the resources folder
-            URL resource = getClass().getResource(path);
-
-            if (resource == null) {
-                System.err.println("SFX Error: Sound effect not found at " + path);
-                return;
-            }
-
-            Media media = new Media(resource.toExternalForm());
-
-            //decision: use a separate player so SFX can play without interrupting bg music
-            MediaPlayer soundPlayer = new MediaPlayer(media);
-
-            //understand: play the sound effect once
-            soundPlayer.play();
-
-            //decision: dispose temporary player after playback so short SFX players dont remain in memory
-            soundPlayer.setOnEndOfMedia(soundPlayer::dispose);
-
-        } catch (Exception e) {
-
-            //understand: prevents an SFX error from crashing the whole game
+        } else {
             System.err.println(
-                    "SFX Error: Failed to play " + fileName + " - " + e.getMessage()
+                    "SFX Error: No loaded sound effect for " + soundEffect
             );
         }
     }
