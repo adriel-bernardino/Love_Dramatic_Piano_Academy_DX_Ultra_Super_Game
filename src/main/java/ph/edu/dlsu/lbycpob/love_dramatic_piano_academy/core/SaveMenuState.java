@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SaveData;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
 
 // Understand: Dedicated state for saving to multiple slots using checkpoint data
 public class SaveMenuState {
@@ -46,6 +47,8 @@ public class SaveMenuState {
             Button slotBtn = FXGL.getUIFactoryService().newButton("Save to Slot " + slot);
             slotBtn.setOnAction(e -> {
                 SaveData data = new SaveData(pendingChapterId, String.valueOf(pendingRoute), String.valueOf(pendingLine), slot);
+                GlobalAudioManager.getInstance()
+                        .playSoundEffect(SoundEffect.SAVE_SUCCESS);//understand: play sfx
                 saveManager.saveGame(data);
 
                 // Understand: Route back to the VN state using the stored checkpoint variables
@@ -55,7 +58,14 @@ public class SaveMenuState {
         }
 
         Button cancelBtn = FXGL.getUIFactoryService().newButton("Cancel");
-        cancelBtn.setOnAction(e -> sceneManager.resumeVisualNovel(pendingChapterId, pendingRoute, pendingLine));
+        cancelBtn.setOnAction(e -> {
+
+            //understand: plays sfx
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);
+
+            sceneManager.resumeVisualNovel(pendingChapterId, pendingRoute, pendingLine);
+        });
         uiBox.getChildren().add(cancelBtn);
 
         FXGL.addUINode(uiBox);

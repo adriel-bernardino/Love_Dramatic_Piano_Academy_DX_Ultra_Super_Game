@@ -7,6 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SaveData;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
 
 // Understand: Dedicated state for picking which save slot to load
 public class LoadMenuState {
@@ -40,13 +41,22 @@ public class LoadMenuState {
                 SaveData data = saveManager.loadGame(slot);
                 if (data != null) {
                     sceneManager.switchToVisualNovelFull(data.chapter(), data.route().charAt(0), Integer.parseInt(data.line()));
+                    GlobalAudioManager.getInstance()
+                            .playSoundEffect(SoundEffect.LOAD_SUCCESS);//understand: play sfx
                 }
             });
             uiBox.getChildren().add(slotBtn);
         }
 
         Button cancelBtn = FXGL.getUIFactoryService().newButton("Back to Menu");
-        cancelBtn.setOnAction(e -> sceneManager.switchToMainMenu());
+        cancelBtn.setOnAction(e -> {
+
+            //understand: plays sfx
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);
+
+            sceneManager.switchToMainMenu();
+        });
         uiBox.getChildren().add(cancelBtn);
 
         FXGL.addUINode(uiBox);
