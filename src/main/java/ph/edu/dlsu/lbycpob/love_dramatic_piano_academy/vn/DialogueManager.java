@@ -11,6 +11,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.GlobalAudioManager;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
 
 // Understand: Single reusable owner of dialogue UI and speaker tag management
 public class DialogueManager {
@@ -69,9 +71,17 @@ public class DialogueManager {
         applyTopButtonStyle(nextBtn, false);
         applyTopButtonStyle(fastForwardBtn, false);
 
-        nextBtn.setOnAction(e -> { e.consume(); handleAdvance(); });
+        nextBtn.setOnAction(e -> {
+            e.consume();
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
+            handleAdvance();
+        });
         fastForwardBtn.setOnAction(e -> {
             e.consume();
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
+
             isFastForwarding = !isFastForwarding;
             applyTopButtonStyle(fastForwardBtn, isFastForwarding);
             if (isFastForwarding) {
@@ -90,7 +100,13 @@ public class DialogueManager {
         dialogueBox.setStyle("-fx-background-color: rgba(235,235,235,0.92); -fx-background-radius: 12;");
         dialogueBox.setTranslateX(BOX_MARGIN_X);
         dialogueBox.setTranslateY(FXGL.getAppHeight() - BOX_HEIGHT - BOX_BOTTOM_MARGIN);
-        dialogueBox.setOnMouseClicked(e -> handleAdvance());
+        dialogueBox.setOnMouseClicked(e -> {
+            //understand: play sfx
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);
+
+            handleAdvance();
+        });
     }
 
     private void applyTopButtonStyle(Button btn, boolean active) {
@@ -106,9 +122,21 @@ public class DialogueManager {
         ColorAdjust darken = new ColorAdjust(); darken.setBrightness(-0.4);
         skipBtn.setEffect(darken); saveBtn.setEffect(darken); quitBtn.setEffect(darken);
 
-        skipBtn.setOnAction(e -> { if (onSkip != null) onSkip.run(); });
-        saveBtn.setOnAction(e -> { if (onSave != null) onSave.run(); });
-        quitBtn.setOnAction(e -> { if (onQuit != null) onQuit.run(); });
+        skipBtn.setOnAction(e -> {
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
+            if (onSkip != null) onSkip.run();
+        });
+        saveBtn.setOnAction(e -> {
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
+            if (onSave != null) onSave.run();
+        });
+        quitBtn.setOnAction(e -> {
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
+            if (onQuit != null) onQuit.run();
+        });
 
         buttonBar = new HBox(10, skipBtn, new Text("|"), saveBtn, new Text("|"), quitBtn);
         buttonBar.setAlignment(Pos.CENTER);

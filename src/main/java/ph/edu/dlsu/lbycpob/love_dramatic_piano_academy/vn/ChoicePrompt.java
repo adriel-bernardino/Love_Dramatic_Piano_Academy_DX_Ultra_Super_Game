@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.GlobalAudioManager;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +29,15 @@ public class ChoicePrompt {
 
         for (Map.Entry<String, Runnable> entry : options.entrySet()) {
             Button btn = FXGL.getUIFactoryService().newButton(entry.getKey());
-            btn.setOnAction(e -> entry.getValue().run());
+            btn.setOnAction(e -> {
+
+                //understand: plays sound when the player selects a story choice
+                GlobalAudioManager.getInstance()
+                        .playSoundEffect(SoundEffect.CHOICE_SELECT);
+
+                //understand: runs action associated with the selected choice
+                entry.getValue().run();
+            });
             box.getChildren().add(btn);
         }
 

@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SaveData;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
 
 public class MainMenuState {
     private Text titleText;
@@ -60,6 +61,9 @@ public class MainMenuState {
 
         // Understand: Set Button Actions
         newGameBtn.setOnAction(e -> {
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
+
             System.out.println("Starting New Game...");
 
             // Understand: Creates a new immutable record with default starting parameters
@@ -71,6 +75,8 @@ public class MainMenuState {
         });
 
         loadGameBtn.setOnAction(e -> {
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
             System.out.println("Opening Load Menu...");
             // Understand: Properly routes to the dedicated Load Menu State and STOPS.
             // The LoadMenuState itself will handle the actual loading logic now.
@@ -78,6 +84,8 @@ public class MainMenuState {
         });
 
         quitBtn.setOnAction(e -> {
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
             // Understand: Safely tells FXGL to close the application
             FXGL.getGameController().exit();
         });
