@@ -4,10 +4,10 @@ package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared;
 public enum SoundEffect {
 
     //understand: sound used for regular button interactions
-    BUTTON_CLICK("click.mp3"),
+    BUTTON_CLICK("click.wav"),
 
     //understand: sound used when making an important story choice
-    CHOICE_SELECT("choice_select.mp3");
+    CHOICE_SELECT("choice_select.wav");
 
     //understand: stores the actual filename of the sound file
     private final String fileName;
