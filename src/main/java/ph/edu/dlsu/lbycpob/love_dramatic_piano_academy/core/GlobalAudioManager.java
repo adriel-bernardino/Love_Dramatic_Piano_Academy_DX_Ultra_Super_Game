@@ -4,6 +4,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.AudioService;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
 
 import java.net.URL;
 
@@ -89,6 +90,44 @@ public class GlobalAudioManager implements AudioService {
             currentTrackName = "";
             isPaused = false;
             System.out.println("Audio Stopped.");
+        }
+    }
+
+    @Override
+    public void playSoundEffect(SoundEffect soundEffect) {
+        //understand: get filename of requested SFX
+        String fileName = soundEffect.getFileName();
+
+        try {
+
+            //understand: sound effects are stored separately from background music
+            String path = "/assets/sfx/" + fileName;
+
+            //understand: find sound file inside the resources folder
+            URL resource = getClass().getResource(path);
+
+            if (resource == null) {
+                System.err.println("SFX Error: Sound effect not found at " + path);
+                return;
+            }
+
+            Media media = new Media(resource.toExternalForm());
+
+            //decision: use a separate player so SFX can play without interrupting bg music
+            MediaPlayer soundPlayer = new MediaPlayer(media);
+
+            //understand: play the sound effect once
+            soundPlayer.play();
+
+            //decision: dispose temporary player after playback so short SFX players dont remain in memory
+            soundPlayer.setOnEndOfMedia(soundPlayer::dispose);
+
+        } catch (Exception e) {
+
+            //understand: prevents an SFX error from crashing the whole game
+            System.err.println(
+                    "SFX Error: Failed to play " + fileName + " - " + e.getMessage()
+            );
         }
     }
 
