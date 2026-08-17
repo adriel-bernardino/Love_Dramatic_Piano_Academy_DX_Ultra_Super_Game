@@ -9,13 +9,21 @@ import java.util.List;
 public class BeatMapParser {
     private List<NoteData> notes = new ArrayList<>();
 
+    public enum NoteType{
+        SINGLE,
+        ARPEGGIO,
+        CHORD,
+        OCTAVE
+    }
     public class NoteData {
         double timestamp;
         String notes;
+        NoteType type;
 
-        NoteData(double timestamp, String notes) {
+        NoteData(double timestamp, String notes, NoteType type) {
             this.timestamp = timestamp;
             this.notes = notes;
+            this.type = type;
         }
 
         public double getTimestamp() {
@@ -26,7 +34,16 @@ public class BeatMapParser {
             return notes;
         }
     }
-
+    private NoteType detectNoteType(String note) {
+        if (note.contains("Octave")) {
+            return NoteType.OCTAVE;
+        } else if (note.contains("Arpeggio")) {
+            return NoteType.ARPEGGIO;
+        } else if (note.contains("+")) {
+            return NoteType.CHORD;
+        }
+        return NoteType.SINGLE;
+    }
     public void loadBeatMap(String filename) {
         try {
             InputStream ibm = getClass().getResourceAsStream("/assets/Beatmap/" + filename);
@@ -46,7 +63,8 @@ public class BeatMapParser {
                 double timestamp = minutes * 60 + seconds;
 
                 String noteString = trimmed.substring(9);
-                NoteData noteData = new NoteData(timestamp, noteString);
+                NoteType type = detectNoteType(noteString);
+                NoteData noteData = new NoteData(timestamp, noteString,type);
                 notes.add(noteData);
             }
         } catch (Exception e) {
