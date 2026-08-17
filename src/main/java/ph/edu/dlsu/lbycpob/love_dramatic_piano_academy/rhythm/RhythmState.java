@@ -24,6 +24,7 @@ public class RhythmState {
 
     private PianoKeyOverlay pianoKeyOverlay;
     private KeyboardMapping keyboardMapping;
+    private BeatMapParser beatMapParser;
 
 
     public RhythmState(CoreSceneManager sceneManager) {
@@ -37,6 +38,11 @@ public class RhythmState {
 
         pianoKeyOverlay = new PianoKeyOverlay();
         keyboardMapping = new KeyboardMapping();
+
+        beatMapParser = new BeatMapParser();
+        beatMapParser.loadBeatMap("beatmap_part2");
+        List<BeatMapParser.NoteData> notes = beatMapParser.getNoteData();
+
         audioManager.playMusic(songTrack);
 
         String contextText = dialogueLines.isEmpty() ? "" : dialogueLines.get(0);
