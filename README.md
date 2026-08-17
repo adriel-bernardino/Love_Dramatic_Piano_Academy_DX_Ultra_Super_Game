@@ -1,5 +1,5 @@
 # PROJECT TITLE:
-Love Dramatic Piano Academy DX Ultra Super Game
+Love Dramatic Piano Academy
 
 # TEAM MEMBERS:
 - BERNARDINO, ADRIEL O. -  adriel-bernardino
@@ -17,7 +17,7 @@ By simplifying the mechanics and integrating an engaging narrative, there is an 
 Teens and adults age 13 and above, looking to learn piano. Visual Novel connoisseurs looking for a new gameplay loop. Anime fans looking to experience playing their favorite soundtracks.
 
 # BRIEF DESCRIPTION:
-It is a 2D hybrid web application that combines a visual novel storytelling experience with a simplified rhythm game mechanics system. Designed as a gamified introduction to piano playing, the project limits gameplay to right-hand keys (a single octave) to ensure accessibility for beginners and manageable scope for development. Players progress through a music school narrative where their performance in piano lessons influences their relationships with different characters.
+It is a 2D hybrid desktop application made with FXGL that combines a visual novel storytelling experience with a simplified rhythm game mechanics system. Designed as a gamified introduction to piano playing, the project limits gameplay to right-hand keys (a single octave) to ensure accessibility for beginners and manageable scope for development. Players progress through a music school narrative where their performance in piano lessons influences their relationships with different characters.
 
 # CORE OOP CONCEPTS:
 - Encapsulation: In each song class that has its own unique note arrays, tempo, and difficulty rating.
