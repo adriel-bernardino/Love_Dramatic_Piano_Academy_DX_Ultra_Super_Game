@@ -23,6 +23,9 @@ public class RhythmState {
     private int storedResumeLine;
 
     private PianoKeyOverlay pianoKeyOverlay;
+    private KeyboardMapping keyboardMapping;
+
+
     public RhythmState(CoreSceneManager sceneManager) {
         this.sceneManager = sceneManager;
         this.audioManager = GlobalAudioManager.getInstance();
@@ -33,6 +36,7 @@ public class RhythmState {
         this.storedResumeLine = resumeLineIndex;
 
         pianoKeyOverlay = new PianoKeyOverlay();
+        keyboardMapping = new KeyboardMapping();
         audioManager.playMusic(songTrack);
 
         String contextText = dialogueLines.isEmpty() ? "" : dialogueLines.get(0);
