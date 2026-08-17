@@ -6,8 +6,9 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class BeatMapParser {
-    private List<NoteData> notes = new ArrayList<>();
-    Map<String, List<String>> octaveMapping = new HashMap<>();
+    private final List<NoteData> notes = new ArrayList<>();
+    private final Map<String, List<String>> octaveMapping = new HashMap<>();
+    private final Map<String, List<String>> arpeggioMapping = new HashMap<>();
     BeatMapParser(){
         octaveMapping.put("A",List.of("A3","A4"));
         octaveMapping.put("G#",List.of("G#3","G#4"));
@@ -16,6 +17,9 @@ public class BeatMapParser {
         octaveMapping.put("D",List.of("D4","D5"));
         octaveMapping.put("C#",List.of("C#4","C#5"));
         octaveMapping.put("B",List.of("B3","B4"));
+
+        arpeggioMapping.put("C Major",List.of("C4", "E4", "G4", "C5"));
+        arpeggioMapping.put("C#m",List.of("C#4", "E4", "G#4", "C#5"));
     }
     public enum NoteType{
         SINGLE,
@@ -32,6 +36,10 @@ public class BeatMapParser {
             this.timestamp = timestamp;
             this.notes = notes;
             this.type = type;
+        }
+
+        public NoteType getType() {
+            return type;
         }
 
         public double getTimestamp() {
@@ -53,13 +61,24 @@ public class BeatMapParser {
         return NoteType.SINGLE;
     }
 
+    private String cleanChord(String note) {
+        int descriptorStart = note.indexOf("(");
+
+        if (descriptorStart != -1) {
+            note = note.substring(0, descriptorStart);
+        }
+
+        return note.trim();
+    }
+
     private List<String> extractNotes(String note, NoteType type) {
         switch (type) {
             case SINGLE:
                 return List.of(note);
 
             case CHORD:
-                return Arrays.asList(note.split("\\s*\\+\\s*"));
+
+                return extractChord(note);
 
             case OCTAVE:
                 return extractOctave(note);
@@ -70,6 +89,22 @@ public class BeatMapParser {
             default:
                 return List.of();
         }
+    }
+    public List<String>extractArpeggio(String note){
+        String cleanNote = note
+                .replace("Arpeggio","")
+                .replace("(Higher Octave)","")
+                .replace("(Fade)","")
+                .trim();
+        return arpeggioMapping.get(cleanNote);
+    }
+
+    private List<String> extractChord(String note) {
+        String cleanNote = cleanChord(note);
+
+        return Arrays.asList(
+                cleanNote.split("\\s*\\+\\s*")
+        );
     }
 
     public List<String>extractOctave(String note){
