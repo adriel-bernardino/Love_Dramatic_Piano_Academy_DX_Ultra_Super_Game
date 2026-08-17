@@ -1,4 +1,87 @@
 package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.rhythm;
 
+import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.input.UserAction;
+import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
 public class PianoKeyOverlay {
+    PianoKeyOverlay() {
+        int appHeight = FXGL.getAppHeight();
+        int appWidth = FXGL.getAppWidth();
+
+        //White Piece
+        Rectangle aOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        aOverlay.setFill(Color.web("#2c2c2c"));
+        aOverlay.setOpacity(0);
+        aOverlay.setX(appWidth * 0.516927083);
+        aOverlay.setY(appHeight * 0.725);
+
+        Rectangle sOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        sOverlay.setFill(Color.web("#2c2c2c"));
+        sOverlay.setOpacity(0);
+        sOverlay.setX(appWidth * 0.553967083);
+        sOverlay.setY(appHeight * 0.725);
+
+        Rectangle dOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        dOverlay.setFill(Color.web("#2c2c2c"));
+        dOverlay.setOpacity(0);
+        dOverlay.setX(appWidth * 0.591007083);
+        dOverlay.setY(appHeight * 0.725);
+
+        Rectangle fOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        fOverlay.setFill(Color.web("#2c2c2c"));
+        fOverlay.setOpacity(0);
+        fOverlay.setX(appWidth * 0.628047083);
+        fOverlay.setY(appHeight * 0.725);
+
+        Rectangle gOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        gOverlay.setFill(Color.web("#2c2c2c"));
+        gOverlay.setOpacity(0);
+        gOverlay.setX(appWidth * 0.665087083);
+        gOverlay.setY(appHeight * 0.725);
+
+        Rectangle hOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        hOverlay.setFill(Color.web("#2c2c2c"));
+        hOverlay.setOpacity(0);
+        hOverlay.setX(appWidth * 0.702127083);
+        hOverlay.setY(appHeight * 0.725);
+
+        Rectangle jOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        jOverlay.setFill(Color.web("#2c2c2c"));
+        jOverlay.setOpacity(0);
+        jOverlay.setX(appWidth * 0.739167083);
+        jOverlay.setY(appHeight * 0.725);
+
+        Rectangle kOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        kOverlay.setFill(Color.web("#2c2c2c"));
+        kOverlay.setOpacity(0);
+        kOverlay.setX(appWidth * 0.776207083);
+        kOverlay.setY(appHeight * 0.725);
+
+        Rectangle lOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        lOverlay.setFill(Color.web("#2c2c2c"));
+        lOverlay.setOpacity(0);
+        lOverlay.setX(appWidth * 0.813247083);
+        lOverlay.setY(appHeight * 0.725);
+
+        Rectangle colOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        colOverlay.setFill(Color.web("#2c2c2c"));
+        colOverlay.setOpacity(0);
+        colOverlay.setX(appWidth * 0.850287083);
+        colOverlay.setY(appHeight * 0.725);
+
+
+        FXGL.addUINode(colOverlay);
+        FXGL.addUINode(lOverlay);
+        FXGL.addUINode(kOverlay);
+        FXGL.addUINode(jOverlay);
+        FXGL.addUINode(hOverlay);
+        FXGL.addUINode(gOverlay);
+        FXGL.addUINode(fOverlay);
+        FXGL.addUINode(dOverlay);
+        FXGL.addUINode(aOverlay);
+        FXGL.addUINode(sOverlay);
+    }
 }
