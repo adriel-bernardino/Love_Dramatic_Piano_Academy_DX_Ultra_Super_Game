@@ -22,6 +22,7 @@ public class RhythmState {
     private TimerAction autoReturnTimer;
     private int storedResumeLine;
 
+    private PianoKeyOverlay pianoKeyOverlay;
     public RhythmState(CoreSceneManager sceneManager) {
         this.sceneManager = sceneManager;
         this.audioManager = GlobalAudioManager.getInstance();
@@ -31,9 +32,9 @@ public class RhythmState {
         FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "Rhythmbgs/rhythmSolo.png"));
         this.storedResumeLine = resumeLineIndex;
 
+        pianoKeyOverlay = new PianoKeyOverlay();
         audioManager.playMusic(songTrack);
 
-        // Position the dialogue text at the bottom left
         String contextText = dialogueLines.isEmpty() ? "" : dialogueLines.get(0);
         subText = FXGL.getUIFactoryService().newText(contextText, 24);
         subText.setFill(Color.LIGHTGRAY);
@@ -63,7 +64,6 @@ public class RhythmState {
     }
 
     public void cleanup() {
-        // Remove nodes individually instead of the old VBox
         if (subText != null) {
             FXGL.removeUINode(subText);
             subText = null;
@@ -75,6 +75,10 @@ public class RhythmState {
         if (autoReturnTimer != null) {
             autoReturnTimer.expire();
             autoReturnTimer = null;
+        }
+        if (pianoKeyOverlay != null) {
+            pianoKeyOverlay.cleanup();
+            pianoKeyOverlay = null;
         }
     }
 }
