@@ -3,12 +3,20 @@ package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.rhythm;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BeatMapParser {
     private List<NoteData> notes = new ArrayList<>();
-
+    Map<String, List<String>> octaveMapping = new HashMap<>();
+    BeatMapParser(){
+        octaveMapping.put("A",List.of("A3","A4"));
+        octaveMapping.put("G#",List.of("G#3","G#4"));
+        octaveMapping.put("F#",List.of("F#3","F#4"));
+        octaveMapping.put("E",List.of("E4","E5"));
+        octaveMapping.put("D",List.of("D4","D5"));
+        octaveMapping.put("C#",List.of("C#4","C#5"));
+        octaveMapping.put("B",List.of("B3","B4"));
+    }
     public enum NoteType{
         SINGLE,
         ARPEGGIO,
@@ -17,10 +25,10 @@ public class BeatMapParser {
     }
     public class NoteData {
         double timestamp;
-        String notes;
+        List<String> notes;
         NoteType type;
 
-        NoteData(double timestamp, String notes, NoteType type) {
+        NoteData(double timestamp, List<String> notes, NoteType type) {
             this.timestamp = timestamp;
             this.notes = notes;
             this.type = type;
@@ -30,7 +38,7 @@ public class BeatMapParser {
             return timestamp;
         }
 
-        public String getNotes() {
+        public List<String> getNotes() {
             return notes;
         }
     }
@@ -43,6 +51,30 @@ public class BeatMapParser {
             return NoteType.CHORD;
         }
         return NoteType.SINGLE;
+    }
+
+    private List<String> extractNotes(String note, NoteType type) {
+        switch (type) {
+            case SINGLE:
+                return List.of(note);
+
+            case CHORD:
+                return Arrays.asList(note.split("\\s*\\+\\s*"));
+
+            case OCTAVE:
+                return extractOctave(note);
+
+            case ARPEGGIO:
+                return extractArpeggio(note);
+
+            default:
+                return List.of();
+        }
+    }
+
+    public List<String>extractOctave(String note){
+        String cleanNote = note.replace("Octave","").trim();
+        return octaveMapping.get(cleanNote);
     }
     public void loadBeatMap(String filename) {
         try {
@@ -64,7 +96,7 @@ public class BeatMapParser {
 
                 String noteString = trimmed.substring(9);
                 NoteType type = detectNoteType(noteString);
-                NoteData noteData = new NoteData(timestamp, noteString,type);
+                NoteData noteData = new NoteData(timestamp, extractNotes(noteString,type),type);
                 notes.add(noteData);
             }
         } catch (Exception e) {
@@ -76,4 +108,6 @@ public class BeatMapParser {
     public List<NoteData> getNoteData() {
         return notes;
     }
+
+
 }
