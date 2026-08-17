@@ -7,7 +7,16 @@ public enum SoundEffect {
     BUTTON_CLICK("click.wav"),
 
     //understand: sound used when making an important story choice
-    CHOICE_SELECT("choice_select.wav");
+    CHOICE_SELECT("choice_select.wav"),
+
+    //understand: played after a save completes successfully
+    SAVE_SUCCESS("save_success.wav"),
+
+    //understand: played after a load completes successfully,
+    LOAD_SUCCESS("load_success.wav"),
+
+    //understand: played when an operation fails
+    FAILED("fail.wav");
 
     //understand: stores the actual filename of the sound file
     private final String fileName;
