@@ -279,5 +279,96 @@ public class PianoKeyOverlay {
                 },
                 KeyCode.SEMICOLON
         );
+        FXGL.getInput().addAction(
+                new UserAction("W Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        wOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        wOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.W
+        );
+        FXGL.getInput().addAction(
+                new UserAction("E Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        eOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        eOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.E
+        );
+        FXGL.getInput().addAction(
+                new UserAction("T Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        tOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        tOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.T
+        );
+        FXGL.getInput().addAction(
+                new UserAction("Y Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        yOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        yOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.Y
+        );
+        FXGL.getInput().addAction(
+                new UserAction("U Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        uOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        uOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.U
+        );
+        FXGL.getInput().addAction(
+                new UserAction("O Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        oOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        oOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.O
+        );
+        FXGL.getInput().addAction(
+                new UserAction("P Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        pOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        pOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.P
+        );
     }
 }
