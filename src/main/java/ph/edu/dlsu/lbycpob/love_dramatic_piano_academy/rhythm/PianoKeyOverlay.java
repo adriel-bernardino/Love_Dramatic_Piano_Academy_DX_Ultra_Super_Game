@@ -7,66 +7,86 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class PianoKeyOverlay {
+
+    private Rectangle aOverlay;
+    private Rectangle sOverlay;
+    private Rectangle dOverlay;
+    private Rectangle fOverlay;
+    private Rectangle gOverlay;
+    private Rectangle hOverlay;
+    private Rectangle jOverlay;
+    private Rectangle kOverlay;
+    private Rectangle lOverlay;
+    private Rectangle colOverlay;
+
+    private Rectangle wOverlay;
+    private Rectangle eOverlay;
+    private Rectangle tOverlay;
+    private Rectangle yOverlay;
+    private Rectangle uOverlay;
+    private Rectangle oOverlay;
+    private Rectangle pOverlay;
+
     PianoKeyOverlay() {
         int appHeight = FXGL.getAppHeight();
         int appWidth = FXGL.getAppWidth();
 
         //White Piece
-        Rectangle aOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        aOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         aOverlay.setFill(Color.web("#2c2c2c"));
         aOverlay.setOpacity(0);
         aOverlay.setX(appWidth * 0.516927083);
         aOverlay.setY(appHeight * 0.725);
 
-        Rectangle sOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        sOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         sOverlay.setFill(Color.web("#2c2c2c"));
         sOverlay.setOpacity(0);
         sOverlay.setX(appWidth * 0.553967083);
         sOverlay.setY(appHeight * 0.725);
 
-        Rectangle dOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        dOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         dOverlay.setFill(Color.web("#2c2c2c"));
         dOverlay.setOpacity(0);
         dOverlay.setX(appWidth * 0.591007083);
         dOverlay.setY(appHeight * 0.725);
 
-        Rectangle fOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        fOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         fOverlay.setFill(Color.web("#2c2c2c"));
         fOverlay.setOpacity(0);
         fOverlay.setX(appWidth * 0.628047083);
         fOverlay.setY(appHeight * 0.725);
 
-        Rectangle gOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        gOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         gOverlay.setFill(Color.web("#2c2c2c"));
         gOverlay.setOpacity(0);
         gOverlay.setX(appWidth * 0.665087083);
         gOverlay.setY(appHeight * 0.725);
 
-        Rectangle hOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        hOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         hOverlay.setFill(Color.web("#2c2c2c"));
         hOverlay.setOpacity(0);
         hOverlay.setX(appWidth * 0.702127083);
         hOverlay.setY(appHeight * 0.725);
 
-        Rectangle jOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        jOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         jOverlay.setFill(Color.web("#2c2c2c"));
         jOverlay.setOpacity(0);
         jOverlay.setX(appWidth * 0.739167083);
         jOverlay.setY(appHeight * 0.725);
 
-        Rectangle kOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        kOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         kOverlay.setFill(Color.web("#2c2c2c"));
         kOverlay.setOpacity(0);
         kOverlay.setX(appWidth * 0.776207083);
         kOverlay.setY(appHeight * 0.725);
 
-        Rectangle lOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        lOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         lOverlay.setFill(Color.web("#2c2c2c"));
         lOverlay.setOpacity(0);
         lOverlay.setX(appWidth * 0.813247083);
         lOverlay.setY(appHeight * 0.725);
 
-        Rectangle colOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
+        colOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.13);
         colOverlay.setFill(Color.web("#2c2c2c"));
         colOverlay.setOpacity(0);
         colOverlay.setX(appWidth * 0.850287083);
@@ -86,43 +106,43 @@ public class PianoKeyOverlay {
 
 
         //Black Piece
-        Rectangle wOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        wOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
         wOverlay.setFill(Color.DARKGRAY);
         wOverlay.setOpacity(0);
         wOverlay.setX(appWidth * 0.54296875);
         wOverlay.setY(appHeight * 0.725);
 
-        Rectangle eOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        eOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
         eOverlay.setFill(Color.DARKGRAY);
         eOverlay.setOpacity(0);
         eOverlay.setX(appWidth * 0.58);
         eOverlay.setY(appHeight * 0.725);
 
-        Rectangle tOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        tOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
         tOverlay.setFill(Color.DARKGRAY);
         tOverlay.setOpacity(0);
         tOverlay.setX(appWidth * 0.654);
         tOverlay.setY(appHeight * 0.725);
 
-        Rectangle yOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        yOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
         yOverlay.setFill(Color.DARKGRAY);
         yOverlay.setOpacity(0);
         yOverlay.setX(appWidth * 0.69104);
         yOverlay.setY(appHeight * 0.725);
 
-        Rectangle uOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        uOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
         uOverlay.setFill(Color.DARKGRAY);
         uOverlay.setOpacity(0);
         uOverlay.setX(appWidth * 0.72808);
         uOverlay.setY(appHeight * 0.725);
 
-        Rectangle oOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        oOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
         oOverlay.setFill(Color.DARKGRAY);
         oOverlay.setOpacity(0);
         oOverlay.setX(appWidth * 0.80208);
         oOverlay.setY(appHeight * 0.725);
 
-        Rectangle pOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        pOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
         pOverlay.setFill(Color.DARKGRAY);
         pOverlay.setOpacity(0);
         pOverlay.setX(appWidth * 0.83912);
@@ -370,5 +390,26 @@ public class PianoKeyOverlay {
                 },
                 KeyCode.P
         );
+    }
+
+    public void cleanup(){
+        FXGL.removeUINode(aOverlay);
+        FXGL.removeUINode(sOverlay);
+        FXGL.removeUINode(dOverlay);
+        FXGL.removeUINode(fOverlay);
+        FXGL.removeUINode(gOverlay);
+        FXGL.removeUINode(hOverlay);
+        FXGL.removeUINode(jOverlay);
+        FXGL.removeUINode(kOverlay);
+        FXGL.removeUINode(lOverlay);
+        FXGL.removeUINode(colOverlay);
+
+        FXGL.removeUINode(wOverlay);
+        FXGL.removeUINode(eOverlay);
+        FXGL.removeUINode(tOverlay);
+        FXGL.removeUINode(yOverlay);
+        FXGL.removeUINode(uOverlay);
+        FXGL.removeUINode(oOverlay);
+        FXGL.removeUINode(pOverlay);
     }
 }
