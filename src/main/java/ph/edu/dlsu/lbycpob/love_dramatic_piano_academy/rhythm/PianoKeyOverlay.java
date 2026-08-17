@@ -227,5 +227,57 @@ public class PianoKeyOverlay {
                 },
                 KeyCode.J
         );
+        FXGL.getInput().addAction(
+                new UserAction("J Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        jOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        jOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.J
+        );
+        FXGL.getInput().addAction(
+                new UserAction("K Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        kOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        kOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.K
+        );
+        FXGL.getInput().addAction(
+                new UserAction("L Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        lOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        lOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.L
+        );
+        FXGL.getInput().addAction(
+                new UserAction("Semi-col Highlight") {
+                    @Override
+                    protected void onActionBegin() {
+                        colOverlay.setOpacity(1);
+                    }
+                    @Override
+                    protected void onActionEnd() {
+                        colOverlay.setOpacity(0);
+                    }
+                },
+                KeyCode.SEMICOLON
+        );
     }
 }
