@@ -72,7 +72,6 @@ public class PianoKeyOverlay {
         colOverlay.setX(appWidth * 0.850287083);
         colOverlay.setY(appHeight * 0.725);
 
-
         FXGL.addUINode(colOverlay);
         FXGL.addUINode(lOverlay);
         FXGL.addUINode(kOverlay);
@@ -83,5 +82,58 @@ public class PianoKeyOverlay {
         FXGL.addUINode(dOverlay);
         FXGL.addUINode(aOverlay);
         FXGL.addUINode(sOverlay);
+
+
+
+        //Black Piece
+        Rectangle wOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        wOverlay.setFill(Color.DARKGRAY);
+        wOverlay.setOpacity(0);
+        wOverlay.setX(appWidth * 0.54296875);
+        wOverlay.setY(appHeight * 0.725);
+
+        Rectangle eOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        eOverlay.setFill(Color.DARKGRAY);
+        eOverlay.setOpacity(0);
+        eOverlay.setX(appWidth * 0.58);
+        eOverlay.setY(appHeight * 0.725);
+
+        Rectangle tOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        tOverlay.setFill(Color.DARKGRAY);
+        tOverlay.setOpacity(0);
+        tOverlay.setX(appWidth * 0.654);
+        tOverlay.setY(appHeight * 0.725);
+
+        Rectangle yOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        yOverlay.setFill(Color.DARKGRAY);
+        yOverlay.setOpacity(0);
+        yOverlay.setX(appWidth * 0.69104);
+        yOverlay.setY(appHeight * 0.725);
+
+        Rectangle uOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        uOverlay.setFill(Color.DARKGRAY);
+        uOverlay.setOpacity(0);
+        uOverlay.setX(appWidth * 0.72808);
+        uOverlay.setY(appHeight * 0.725);
+
+        Rectangle oOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        oOverlay.setFill(Color.DARKGRAY);
+        oOverlay.setOpacity(0);
+        oOverlay.setX(appWidth * 0.80208);
+        oOverlay.setY(appHeight * 0.725);
+
+        Rectangle pOverlay = new Rectangle(appWidth * 0.035, appHeight * 0.0675);
+        pOverlay.setFill(Color.DARKGRAY);
+        pOverlay.setOpacity(0);
+        pOverlay.setX(appWidth * 0.83912);
+        pOverlay.setY(appHeight * 0.725);
+
+        FXGL.addUINode(pOverlay);
+        FXGL.addUINode(oOverlay);
+        FXGL.addUINode(uOverlay);
+        FXGL.addUINode(yOverlay);
+        FXGL.addUINode(tOverlay);
+        FXGL.addUINode(eOverlay);
+        FXGL.addUINode(wOverlay);
     }
 }
