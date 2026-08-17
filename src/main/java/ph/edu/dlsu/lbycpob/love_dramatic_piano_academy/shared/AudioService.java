@@ -5,4 +5,5 @@ public interface AudioService {
     void playMusic(String trackName);
     void setPlaybackSpeed(double speed); // Accommodates 1x, 2x, 4x
     void stopMusic();
+    void playSoundEffect(SoundEffect soundEffect);//understand: allows any game state to request a sound effect
 }
