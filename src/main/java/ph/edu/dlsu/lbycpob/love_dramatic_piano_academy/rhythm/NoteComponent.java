@@ -19,6 +19,24 @@ public class NoteComponent {
         VisualNote = new Rectangle();
     }
 
+    public enum NoteType{
+        SINGLE,
+        CHORD,
+        ARPEGGIO,
+        OCTAVE
+    }
+
+    public NoteType detectNoteType(String note){
+         if (note.contains("Arpeggio")){
+             return NoteType.ARPEGGIO;
+        } else if (note.contains("+")) {
+             return NoteType.CHORD;
+         } else if (note.contains("Octave")) {
+             return NoteType.OCTAVE;
+         }
+         else return NoteType.SINGLE;
+    }
+
     public double getTimestamp() {
         return timestamp;
     }
