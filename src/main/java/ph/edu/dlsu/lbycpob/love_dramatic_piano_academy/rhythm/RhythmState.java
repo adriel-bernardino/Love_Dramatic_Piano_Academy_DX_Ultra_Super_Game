@@ -10,8 +10,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import javafx.scene.effect.DropShadow;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.CoreSceneManager;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.GlobalAudioManager;
 
@@ -43,17 +46,18 @@ public class RhythmState {
     private int lives = MAX_LIVES;
     private Line targetLine;
     private final List<Rectangle> lifeIndicators = new ArrayList<>();
+    private Text songTitle;
+    private Text countdownText;
 
     public RhythmState(CoreSceneManager sceneManager) {
         this.sceneManager = sceneManager;
         this.audioManager = GlobalAudioManager.getInstance();
         pianoKeyOverlay = new PianoKeyOverlay();
     }
-
     public void start(List<String> dialogueLines, int resumeLineIndex, String songTrack) {
         FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "Rhythmbgs/rhythmSolo.png"));
         double targetY = NoteComponent.targetY;
-        targetLine = new Line(FXGL.getAppWidth()*0.515, targetY, FXGL.getAppWidth()*0.925, targetY);
+        targetLine = new Line(FXGL.getAppWidth() * 0.515, targetY, FXGL.getAppWidth() * 0.925, targetY);
         targetLine.setStroke(Color.BLACK);
         targetLine.setStrokeWidth(3);
         FXGL.addUINode(targetLine);
@@ -63,10 +67,13 @@ public class RhythmState {
         createLifeDisplay();
         keyboardMapping = new KeyboardMapping();
         beatMapParser = new BeatMapParser();
-        if (songTrack.contains("Intro")){
+        String songTitleText;
+        if (songTrack.contains("Intro")) {
             beatMapParser.loadBeatMap("beatmap_part1");
-        }else {
+            songTitleText = "Because by The Beatles";
+        } else {
             beatMapParser.loadBeatMap("beatmap_part2");
+            songTitleText = "Lich Mich Im Arsch";
         }
         beatmapNotes = beatMapParser.getNoteData();
         if (beatmapNotes.isEmpty()) {
@@ -74,24 +81,89 @@ public class RhythmState {
             finishDummyRhythm();
             return;
         }
+        showSongTitle(songTitleText);
         nextBeatmapIndex = 0;
+        startCountdown(songTrack);
+    }
+    private void startCountdown(String songTrack) {
+        FXGL.getGameTimer().runOnceAfter(() -> {
+            countdownText = new Text("3");
+            countdownText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 64));
+            countdownText.setFill(Color.WHITE);
+            countdownText.setTranslateX(FXGL.getAppWidth() * 0.48);
+            countdownText.setTranslateY(FXGL.getAppHeight() * 0.50);
+            FXGL.addUINode(countdownText);
+        }, Duration.seconds(2));
+        FXGL.getGameTimer().runOnceAfter(() -> {
+            if (countdownText != null) {
+                countdownText.setText("2");
+            }
+        }, Duration.seconds(3));
+        FXGL.getGameTimer().runOnceAfter(() -> {
+            if (countdownText != null) {
+                countdownText.setText("1");
+            }
+        }, Duration.seconds(4));
+        FXGL.getGameTimer().runOnceAfter(() -> {
+            if (countdownText != null) {
+                FXGL.removeUINode(countdownText);
+                countdownText = null;
+            }
+            if (songTitle != null) {
+                FXGL.removeUINode(songTitle);
+                songTitle = null;
+            }
+            startRhythmGame(songTrack);
+        }, Duration.seconds(5));
+    }
+    private Rectangle songTitleBackground;
+    private void showSongTitle(String title) {
+            songTitleBackground = new Rectangle(FXGL.getAppWidth() * 0.60, FXGL.getAppHeight() * 0.14);
+            songTitleBackground.setFill(Color.rgb(255, 255, 255, 0.40));
+            songTitleBackground.setArcWidth(25);
+            songTitleBackground.setArcHeight(25);
+            songTitleBackground.setTranslateX((FXGL.getAppWidth() - songTitleBackground.getWidth()) / 2);
+            songTitleBackground.setTranslateY(FXGL.getAppHeight()* 0.41);
+            songTitle = new Text(title);
+            songTitle.setFont(Font.font("Open Sans", FontWeight.BOLD, 48));
+            songTitle.setFill(Color.BLACK);
+            DropShadow shadow = new DropShadow();
+            shadow.setRadius(10);
+            shadow.setSpread(0.15);
+            shadow.setColor(Color.rgb(0, 0, 0, 0.35));
+            songTitle.setEffect(shadow);
+            songTitle.setTranslateX((FXGL.getAppWidth() - songTitle.getLayoutBounds().getWidth()) / 2);
+            songTitle.setTranslateY(FXGL.getAppHeight() * 0.50);
+            FXGL.addUINode(songTitleBackground);
+            FXGL.addUINode(songTitle);
+            FXGL.getGameTimer().runOnceAfter(() -> {
+                if (songTitle != null) {
+                    FXGL.removeUINode(songTitle);
+                    songTitle = null;
+                }
+                if (songTitleBackground != null) {
+                    FXGL.removeUINode(songTitleBackground);
+                    songTitleBackground = null;
+                }
+            }, Duration.seconds(2));
+        }
+    private void startRhythmGame(String songTrack) {
         audioManager.playMusic(songTrack);
-        startTime  = System.nanoTime();
+        startTime = System.nanoTime();
         noteMovement = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 double currentTime = getCurrentTime();
                 double finalTimestamp = beatmapNotes.get(beatmapNotes.size() - 1).getTimestamp();
-
                 if (currentTime >= finalTimestamp + 1.0) {
                     finishDummyRhythm();
                     return;
                 }
                 KeyCode key = pianoKeyOverlay.consumeKeyPress();
-                if (key!=null){
+                if (key != null) {
                     checkKeyPress(key);
                 }
-                if (nextBeatmapIndex<beatmapNotes.size()) {
+                if (nextBeatmapIndex < beatmapNotes.size()) {
                     BeatMapParser.NoteData data = beatmapNotes.get(nextBeatmapIndex);
                     double travelTime = getTravelTime();
                     double spawnTime = data.getTimestamp() - travelTime;
@@ -101,9 +173,13 @@ public class RhythmState {
                             String note = notes.get(i);
                             double noteTimestamp = data.getTimestamp();
                             if (data.getType() == BeatMapParser.NoteType.OCTAVE || data.getType() == BeatMapParser.NoteType.ARPEGGIO) {
-                                noteTimestamp += i * NoteComponent.specialNoteInterval;}
-                                NoteComponent noteComponent = new NoteComponent(noteTimestamp, note, travelTime);noteComponents.add(noteComponent);
-                                FXGL.addUINode(noteComponent.getVisualNote());}nextBeatmapIndex++;
+                                noteTimestamp += i * NoteComponent.specialNoteInterval;
+                            }
+                            NoteComponent noteComponent = new NoteComponent(noteTimestamp, note, travelTime);
+                            noteComponents.add(noteComponent);
+                            FXGL.addUINode(noteComponent.getVisualNote());
+                        }
+                        nextBeatmapIndex++;
                     }
                 }
                 Iterator<NoteComponent> iterator = noteComponents.iterator();
@@ -119,7 +195,8 @@ public class RhythmState {
                     double noteCenterY = note.getVisualNote().getY() + NoteComponent.noteHeight / 2;
                     if (noteCenterY > NoteComponent.missY) {
                         System.out.println("MISS: " + note.getNote());
-                        showFeedback("MISS!", Color.RED);
+                        showFeedback("MISS!", Color.RED
+                        );
                         loseLife();
                         FXGL.removeUINode(note.getVisualNote());
                         iterator.remove();
@@ -129,7 +206,7 @@ public class RhythmState {
                         }
                     }
                 }
-        }
+            }
         };
         noteMovement.start();
     }
@@ -200,6 +277,14 @@ public class RhythmState {
             FXGL.removeUINode(targetLine);
             targetLine = null;
         }
+        if (songTitle != null) {
+            FXGL.removeUINode(songTitle);
+            songTitle = null;
+        }
+        if (songTitleBackground != null) {
+            FXGL.removeUINode(songTitleBackground);
+            songTitleBackground = null;
+        }
         clearLifeDisplay();
         sceneManager.switchToVisualNovelAtLine(storedResumeLine);
     }
@@ -246,6 +331,19 @@ public class RhythmState {
         if (pianoKeyOverlay != null) {
             pianoKeyOverlay.hide();
         }
+        if (targetLine != null) {
+            FXGL.removeUINode(targetLine);
+            targetLine = null;
+        }
+        if (songTitle != null) {
+            FXGL.removeUINode(songTitle);
+            songTitle = null;if (songTitleBackground != null) {
+                FXGL.removeUINode(songTitleBackground);
+                songTitleBackground = null;
+            }
+
+        }
+        clearLifeDisplay();
     }
     private void showFeedback(String message, Color color) {
         Text feedback = FXGL.getUIFactoryService().newText(message, 32);
