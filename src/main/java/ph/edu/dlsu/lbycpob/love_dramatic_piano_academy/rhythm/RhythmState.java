@@ -55,7 +55,7 @@ public class RhythmState {
         pianoKeyOverlay = new PianoKeyOverlay();
     }
     public void start(List<String> dialogueLines, int resumeLineIndex, String songTrack) {
-        FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "Rhythmbgs/rhythmSolo.png"));
+        FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "Rhythmbgs/rhythmPsalm.png"));
         pianoKeyOverlay.activate();
         double targetY = NoteComponent.targetY;
         targetLine = new Line(FXGL.getAppWidth() * 0.515, targetY, FXGL.getAppWidth() * 0.925, targetY);
@@ -119,35 +119,35 @@ public class RhythmState {
     }
     private Rectangle songTitleBackground;
     private void showSongTitle(String title) {
-            songTitleBackground = new Rectangle(FXGL.getAppWidth() * 0.60, FXGL.getAppHeight() * 0.14);
-            songTitleBackground.setFill(Color.rgb(255, 255, 255, 0.40));
-            songTitleBackground.setArcWidth(25);
-            songTitleBackground.setArcHeight(25);
-            songTitleBackground.setTranslateX((FXGL.getAppWidth() - songTitleBackground.getWidth()) / 2);
-            songTitleBackground.setTranslateY(FXGL.getAppHeight()* 0.41);
-            songTitle = new Text(title);
-            songTitle.setFont(Font.font("Open Sans", FontWeight.BOLD, 48));
-            songTitle.setFill(Color.BLACK);
-            DropShadow shadow = new DropShadow();
-            shadow.setRadius(10);
-            shadow.setSpread(0.15);
-            shadow.setColor(Color.rgb(0, 0, 0, 0.35));
-            songTitle.setEffect(shadow);
-            songTitle.setTranslateX((FXGL.getAppWidth() - songTitle.getLayoutBounds().getWidth()) / 2);
-            songTitle.setTranslateY(FXGL.getAppHeight() * 0.50);
-            FXGL.addUINode(songTitleBackground);
-            FXGL.addUINode(songTitle);
-            FXGL.getGameTimer().runOnceAfter(() -> {
-                if (songTitle != null) {
-                    FXGL.removeUINode(songTitle);
-                    songTitle = null;
-                }
-                if (songTitleBackground != null) {
-                    FXGL.removeUINode(songTitleBackground);
-                    songTitleBackground = null;
-                }
-            }, Duration.seconds(2));
-        }
+        songTitleBackground = new Rectangle(FXGL.getAppWidth() * 0.60, FXGL.getAppHeight() * 0.14);
+        songTitleBackground.setFill(Color.rgb(255, 255, 255, 0.40));
+        songTitleBackground.setArcWidth(25);
+        songTitleBackground.setArcHeight(25);
+        songTitleBackground.setTranslateX((FXGL.getAppWidth() - songTitleBackground.getWidth()) / 2);
+        songTitleBackground.setTranslateY(FXGL.getAppHeight()* 0.41);
+        songTitle = new Text(title);
+        songTitle.setFont(Font.font("Open Sans", FontWeight.BOLD, 48));
+        songTitle.setFill(Color.BLACK);
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(10);
+        shadow.setSpread(0.15);
+        shadow.setColor(Color.rgb(0, 0, 0, 0.35));
+        songTitle.setEffect(shadow);
+        songTitle.setTranslateX((FXGL.getAppWidth() - songTitle.getLayoutBounds().getWidth()) / 2);
+        songTitle.setTranslateY(FXGL.getAppHeight() * 0.50);
+        FXGL.addUINode(songTitleBackground);
+        FXGL.addUINode(songTitle);
+        FXGL.getGameTimer().runOnceAfter(() -> {
+            if (songTitle != null) {
+                FXGL.removeUINode(songTitle);
+                songTitle = null;
+            }
+            if (songTitleBackground != null) {
+                FXGL.removeUINode(songTitleBackground);
+                songTitleBackground = null;
+            }
+        }, Duration.seconds(2));
+    }
     private void startRhythmGame(String songTrack) {
         audioManager.playMusic(songTrack);
         startTime = System.nanoTime();
