@@ -3,6 +3,7 @@ package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.rhythm;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.time.TimerAction;
+import javafx.animation.AnimationTimer;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -10,6 +11,7 @@ import javafx.util.Duration;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.CoreSceneManager;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.GlobalAudioManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RhythmState {
@@ -26,6 +28,10 @@ public class RhythmState {
     private KeyboardMapping keyboardMapping;
     private BeatMapParser beatMapParser;
 
+    private final List<NoteComponent> noteComponents = new ArrayList<>();
+    private  List<BeatMapParser.NoteData> beatmapNotes;
+    private AnimationTimer noteMovement;
+    private long startTime;
 
     public RhythmState(CoreSceneManager sceneManager) {
         this.sceneManager = sceneManager;
@@ -35,34 +41,16 @@ public class RhythmState {
     public void start(List<String> dialogueLines, int resumeLineIndex, String songTrack) {
         FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "Rhythmbgs/rhythmSolo.png"));
         this.storedResumeLine = resumeLineIndex;
-
         pianoKeyOverlay = new PianoKeyOverlay();
         keyboardMapping = new KeyboardMapping();
-
         beatMapParser = new BeatMapParser();
         beatMapParser.loadBeatMap("beatmap_part2");
-        List<BeatMapParser.NoteData> notes = beatMapParser.getNoteData();
-
+        beatmapNotes = beatMapParser.getNoteData();
         audioManager.playMusic(songTrack);
-
-        String contextText = dialogueLines.isEmpty() ? "" : dialogueLines.get(0);
-        subText = FXGL.getUIFactoryService().newText(contextText, 24);
-        subText.setFill(Color.LIGHTGRAY);
-        subText.setTranslateX(100);
-        subText.setTranslateY(FXGL.getAppHeight() - 300);
-
-        // Position the skip button at the top right
-        skipBtn = FXGL.getUIFactoryService().newButton("Skip Song");
-        skipBtn.setOnAction(e -> finishDummyRhythm());
-        skipBtn.setTextFill(Color.LIGHTGRAY);
-        skipBtn.setStyle("-fx-background-color: rgb(104 100 100);");
-        skipBtn.setTranslateX(FXGL.getAppWidth() / 2);
-        skipBtn.setTranslateY(50);
-
-        FXGL.addUINode(subText);
-        FXGL.addUINode(skipBtn);
-
-        autoReturnTimer = FXGL.getGameTimer().runOnceAfter(this::finishDummyRhythm, Duration.seconds(10));
+        startTime  = System.nanoTime();
+    }
+    private double getCurrentTime(){
+        return (System.nanoTime()-startTime)/1_000_000_000.0;
     }
 
     private void finishDummyRhythm() {
