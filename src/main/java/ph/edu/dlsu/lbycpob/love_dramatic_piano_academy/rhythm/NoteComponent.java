@@ -12,6 +12,7 @@ public class NoteComponent {
     private String note;
     private Rectangle VisualNote;
     int lane;
+    private final double travelTime;
 
     public static final double noteWidth = FXGL.getAppWidth() * 0.0104;
     public static final double noteHeight = FXGL.getAppHeight() * 0.0370;
@@ -19,12 +20,13 @@ public class NoteComponent {
     public static final double targetY = FXGL.getAppHeight() * 0.650;
     public static final double missY = FXGL.getAppHeight() * 0.720;
     public static final double hitTolerance = FXGL.getAppHeight() * 0.015;
-    public static final double defaultTravelTime = 2.0;
-    public static final double minTravelTime = 1;
-    NoteComponent(double timestamp, String note){
+    public static final double defaultTravelTime = 3.0;
+    public static final double minTravelTime = 2.0;
+    NoteComponent(double timestamp, String note, double travelTime){
         this.timestamp = timestamp;
         this.note = note;
         this.lane = getLaneForNote(note);
+        this.travelTime = travelTime;
 
         VisualNote = new Rectangle(noteWidth,noteHeight);
         VisualNote.setX(getlaneX(this.lane));
@@ -49,6 +51,10 @@ public class NoteComponent {
         noteLaneMapping.put(List.of("D5"),14);
         noteLaneMapping.put(List.of("D#5"),15);
         noteLaneMapping.put(List.of("F5"),16);
+    }
+
+    public double getTravelTime() {
+        return travelTime;
     }
 
     private static int getLaneForNote(String note) {

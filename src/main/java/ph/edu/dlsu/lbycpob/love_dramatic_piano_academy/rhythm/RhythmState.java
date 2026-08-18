@@ -60,7 +60,7 @@ public class RhythmState {
                     double spawnTime = data.getTimestamp() - travelTime;
                 if (currentTime >= spawnTime) {
                     for (String note:data.getNotes()){
-                        NoteComponent noteComponent = new NoteComponent(data.getTimestamp(),note);
+                        NoteComponent noteComponent = new NoteComponent(data.getTimestamp(),note,travelTime);
                         noteComponents.add(noteComponent);
                         FXGL.addUINode(noteComponent.getVisualNote());
                     }
@@ -68,7 +68,7 @@ public class RhythmState {
                 }
             }
                 for (NoteComponent note: noteComponents){
-                    double travelTime = NoteComponent.defaultTravelTime;
+                    double travelTime = note.getTravelTime();
                     double spawnTime = note.getTimestamp() - travelTime;
                     double progress = (currentTime-spawnTime)/travelTime;
                     progress = Math.max(0,Math.min(1,progress));
