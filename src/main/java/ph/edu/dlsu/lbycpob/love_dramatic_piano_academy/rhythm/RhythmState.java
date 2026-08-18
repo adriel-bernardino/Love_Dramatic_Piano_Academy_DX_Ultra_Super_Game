@@ -8,6 +8,8 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.CoreSceneManager;
@@ -27,7 +29,7 @@ public class RhythmState {
     private TimerAction autoReturnTimer;
     private int storedResumeLine;
 
-    private PianoKeyOverlay pianoKeyOverlay;
+    private final PianoKeyOverlay pianoKeyOverlay;
     private KeyboardMapping keyboardMapping;
     private BeatMapParser beatMapParser;
 
@@ -39,17 +41,26 @@ public class RhythmState {
 
     private static final int MAX_LIVES = 10;
     private int lives = MAX_LIVES;
+    private Line targetLine;
+    private final List<Rectangle> lifeIndicators = new ArrayList<>();
 
     public RhythmState(CoreSceneManager sceneManager) {
         this.sceneManager = sceneManager;
         this.audioManager = GlobalAudioManager.getInstance();
+        pianoKeyOverlay = new PianoKeyOverlay();
     }
 
     public void start(List<String> dialogueLines, int resumeLineIndex, String songTrack) {
         FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "Rhythmbgs/rhythmSolo.png"));
+        double targetY = NoteComponent.targetY;
+        targetLine = new Line(FXGL.getAppWidth()*0.515, targetY, FXGL.getAppWidth()*0.925, targetY);
+        targetLine.setStroke(Color.BLACK);
+        targetLine.setStrokeWidth(3);
+        FXGL.addUINode(targetLine);
         this.storedResumeLine = resumeLineIndex;
         lives = MAX_LIVES;
-        pianoKeyOverlay = new PianoKeyOverlay();
+        clearLifeDisplay();
+        createLifeDisplay();
         keyboardMapping = new KeyboardMapping();
         beatMapParser = new BeatMapParser();
         beatMapParser.loadBeatMap("beatmap_part2");
@@ -119,6 +130,34 @@ public class RhythmState {
         noteMovement.start();
     }
 
+    private void createLifeDisplay() {
+        for (int i = 0; i < MAX_LIVES; i++) {
+            Rectangle life = new Rectangle(FXGL.getAppWidth() * 0.015, FXGL.getAppHeight() * 0.025);
+            life.setFill(Color.RED);
+            life.setTranslateX(FXGL.getAppWidth() * 0.02 + i * FXGL.getAppWidth() * 0.02);
+            life.setTranslateY(FXGL.getAppHeight() * 0.03);
+            lifeIndicators.add(life);
+            FXGL.addUINode(life);
+        }
+    }
+
+    private void updateLifeDisplay() {
+        for (int i = 0; i < lifeIndicators.size(); i++) {
+
+            if (i < lives) {
+                lifeIndicators.get(i).setOpacity(1);
+            } else {
+                lifeIndicators.get(i).setOpacity(0.2);
+            }
+        }
+    }
+
+    private void clearLifeDisplay() {
+        for (Rectangle life : lifeIndicators) {
+            FXGL.removeUINode(life);
+        }
+        lifeIndicators.clear();
+    }
     private double getSongProgress(){
         double songDuration = beatmapNotes.get(beatmapNotes.size() - 1).getTimestamp();
         if (songDuration<=0){
@@ -151,13 +190,19 @@ public class RhythmState {
         }
         clearNotes();
         if (pianoKeyOverlay != null) {
-            pianoKeyOverlay.cleanup();pianoKeyOverlay = null;
+            pianoKeyOverlay.hide();
         }
+        if (targetLine != null) {
+            FXGL.removeUINode(targetLine);
+            targetLine = null;
+        }
+        clearLifeDisplay();
         sceneManager.switchToVisualNovelAtLine(storedResumeLine);
     }
     private void loseLife() {
         lives--;
         System.out.println("LIFE LOST | Remaining: " + lives);
+        updateLifeDisplay();
         if (lives <= 0) {
             System.out.println("GAME OVER");
         }
@@ -195,8 +240,7 @@ public class RhythmState {
         }
         clearNotes();
         if (pianoKeyOverlay != null) {
-            pianoKeyOverlay.cleanup();
-            pianoKeyOverlay = null;
+            pianoKeyOverlay.hide();
         }
     }
     private void showFeedback(String message, Color color) {
