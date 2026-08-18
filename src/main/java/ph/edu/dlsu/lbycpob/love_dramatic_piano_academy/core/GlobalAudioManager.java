@@ -9,6 +9,7 @@ import javafx.scene.media.AudioClip;
 import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SettingsData;
 
 import java.net.URL;
 
@@ -22,12 +23,19 @@ public class GlobalAudioManager implements AudioService {
     private boolean isPaused = false;
     private double musicVolume = 0.5;
     private double sfxVolume = 0.5;
+    private final SettingsManager settingsManager = new SettingsManager(); //understand: so settings save
 
     //understand: stores already loaded sound effects so they can play immediately
     private final Map<SoundEffect, AudioClip> soundEffects =
             new EnumMap<>(SoundEffect.class);
 
     private GlobalAudioManager() {
+        //understand: load saved volume preferences before caching sound effects,
+        //so clips get the correct volume applied on first load
+        SettingsData saved = settingsManager.loadSettings();
+        this.musicVolume = saved.musicVolume();
+        this.sfxVolume = saved.sfxVolume();
+
         //understand: preload all sound effects once when the audio manager is created
         loadSoundEffects();
     }
@@ -58,9 +66,6 @@ public class GlobalAudioManager implements AudioService {
             //decision: AudioClip for short sounds because it can play w/o creating new MediaPlayer every time
             AudioClip clip = new AudioClip(resource.toExternalForm());
             clip.setVolume(sfxVolume);//understand: apply current sfx volume to newly loaded clip
-
-            //understand: store the loaded clip so it can be reused immediately
-            soundEffects.put(effect, clip);
 
             //understand: store the loaded clip so it can be reused immediately
             soundEffects.put(effect, clip);
@@ -185,6 +190,10 @@ public class GlobalAudioManager implements AudioService {
     @Override
     public double getSfxVolume() {
         return sfxVolume;
+    }
+
+    public void saveVolumeSettings() {
+        settingsManager.saveSettings(musicVolume, sfxVolume);
     }
 
     // Understand: Crucial for Rhythm Game note-fall sync and timing verification
