@@ -19,7 +19,7 @@ public class NoteComponent {
     public static final double spawnY = FXGL.getAppHeight()*0.01;
     public static final double targetY = FXGL.getAppHeight() * 0.650;
     public static final double missY = FXGL.getAppHeight() * 0.720;
-    public static final double hitTolerance = FXGL.getAppHeight() * 0.015;
+    public static final double hitTolerance = 20;
     public static final double defaultTravelTime = 6.0;
     public static final double minTravelTime = 4.0;
     public static final double specialNoteInterval = 1.5;
