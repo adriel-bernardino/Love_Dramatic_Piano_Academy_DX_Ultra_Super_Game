@@ -32,6 +32,7 @@ public class PianoKeyOverlay {
     private Rectangle pOverlay;
 
     private final List<UserAction> actions = new ArrayList<>();
+    private boolean active = false;
 
     public PianoKeyOverlay() {
         int appHeight = FXGL.getAppHeight();
@@ -165,8 +166,7 @@ public class PianoKeyOverlay {
         UserAction aAction= new UserAction("A Highlight") {
             @Override
             protected void onActionBegin() {
-                aOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.A);
+                press(aOverlay,KeyCode.A);
             }
             @Override
             protected void onActionEnd() {
@@ -179,8 +179,7 @@ public class PianoKeyOverlay {
         UserAction SAction= new UserAction("S Highlight") {
             @Override
             protected void onActionBegin() {
-                sOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.S);
+                press(sOverlay, KeyCode.S);
             }
             @Override
             protected void onActionEnd() {
@@ -193,8 +192,7 @@ public class PianoKeyOverlay {
         UserAction dAction= new UserAction("D Highlight") {
             @Override
             protected void onActionBegin() {
-                dOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.D);
+                press(dOverlay, KeyCode.D);
             }
             @Override
             protected void onActionEnd() {
@@ -208,8 +206,7 @@ public class PianoKeyOverlay {
         UserAction FAction= new UserAction("F Highlight") {
             @Override
             protected void onActionBegin() {
-                fOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.F);
+                press(fOverlay, KeyCode.F);
             }
             @Override
             protected void onActionEnd() {
@@ -223,8 +220,7 @@ public class PianoKeyOverlay {
         UserAction gaction= new UserAction("G Highlight") {
             @Override
             protected void onActionBegin() {
-                gOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.G);
+                press(gOverlay, KeyCode.G);
             }
             @Override
             protected void onActionEnd() {
@@ -237,8 +233,7 @@ public class PianoKeyOverlay {
         UserAction HAction= new UserAction("H Highlight") {
             @Override
             protected void onActionBegin() {
-                hOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.H);
+                press(hOverlay, KeyCode.H);
             }
             @Override
             protected void onActionEnd() {
@@ -251,8 +246,7 @@ public class PianoKeyOverlay {
         UserAction JAction= new UserAction("J Highlight") {
             @Override
             protected void onActionBegin() {
-                jOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.J);
+                press(jOverlay, KeyCode.J);
             }
             @Override
             protected void onActionEnd() {
@@ -265,8 +259,7 @@ public class PianoKeyOverlay {
         UserAction KAction= new UserAction("K Highlight") {
             @Override
             protected void onActionBegin() {
-                kOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.K);
+                press(kOverlay, KeyCode.K);
             }
             @Override
             protected void onActionEnd() {
@@ -279,8 +272,7 @@ public class PianoKeyOverlay {
         UserAction LAction= new UserAction("L Highlight") {
             @Override
             protected void onActionBegin() {
-                lOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.L);
+                press(lOverlay, KeyCode.L);
             }
             @Override
             protected void onActionEnd() {
@@ -293,8 +285,7 @@ public class PianoKeyOverlay {
         UserAction SemiAction= new UserAction("Semicol Highlight") {
             @Override
             protected void onActionBegin() {
-                colOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.SEMICOLON);
+                press(colOverlay, KeyCode.SEMICOLON);
             }
             @Override
             protected void onActionEnd() {
@@ -308,8 +299,7 @@ public class PianoKeyOverlay {
         UserAction WAction= new UserAction("W Highlight") {
             @Override
             protected void onActionBegin() {
-                wOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.W);
+                press(wOverlay, KeyCode.W);
             }
             @Override
             protected void onActionEnd() {
@@ -318,11 +308,22 @@ public class PianoKeyOverlay {
         };
         FXGL.getInput().addAction(WAction, KeyCode.W);
         actions.add(WAction);
+        UserAction EAction= new UserAction("E Highlight") {
+            @Override
+            protected void onActionBegin() {
+                press(eOverlay, KeyCode.E);
+            }
+            @Override
+            protected void onActionEnd() {
+                eOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(EAction, KeyCode.E);
+        actions.add(EAction);
         UserAction TAction= new UserAction("T Highlight") {
             @Override
             protected void onActionBegin() {
-                tOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.T);
+                press(tOverlay, KeyCode.T);
             }
             @Override
             protected void onActionEnd() {
@@ -335,8 +336,7 @@ public class PianoKeyOverlay {
         UserAction YAction= new UserAction("Y Highlight") {
             @Override
             protected void onActionBegin() {
-                yOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.Y);
+                press(yOverlay, KeyCode.Y);
             }
             @Override
             protected void onActionEnd() {
@@ -349,8 +349,7 @@ public class PianoKeyOverlay {
         UserAction UAction= new UserAction("U Highlight") {
             @Override
             protected void onActionBegin() {
-                uOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.U);
+                press(uOverlay, KeyCode.U);
             }
             @Override
             protected void onActionEnd() {
@@ -363,8 +362,7 @@ public class PianoKeyOverlay {
         UserAction OAction= new UserAction("O Highlight") {
             @Override
             protected void onActionBegin() {
-                oOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.O);
+                press(oOverlay, KeyCode.O);
             }
             @Override
             protected void onActionEnd() {
@@ -377,8 +375,7 @@ public class PianoKeyOverlay {
         UserAction PAction= new UserAction("P Highlight") {
             @Override
             protected void onActionBegin() {
-                pOverlay.setOpacity(1);
-                keyPressStorage(KeyCode.P);
+                press(pOverlay, KeyCode.P);
             }
             @Override
             protected void onActionEnd() {
@@ -388,7 +385,18 @@ public class PianoKeyOverlay {
         FXGL.getInput().addAction(PAction, KeyCode.P);
         actions.add(PAction);
     }
+
+    private void press(Rectangle overlay, KeyCode key) {
+        if (!active) return;
+        overlay.setOpacity(1);
+        keyPressStorage(key);
+    }
+
     public void keyPressStorage(KeyCode key){
+        if (!active) {
+            return;
+        }
+
         keyPressed = key;
     };
     public KeyCode consumeKeyPress() {
@@ -400,7 +408,13 @@ public class PianoKeyOverlay {
         return keyPressed;
     }
 
+    public void activate() {
+        active = true;
+    }
+
     public void hide() {
+        active = false;
+        keyPressed = null;
         aOverlay.setOpacity(0);
         sOverlay.setOpacity(0);
         dOverlay.setOpacity(0);

@@ -56,6 +56,7 @@ public class RhythmState {
     }
     public void start(List<String> dialogueLines, int resumeLineIndex, String songTrack) {
         FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "Rhythmbgs/rhythmSolo.png"));
+        pianoKeyOverlay.activate();
         double targetY = NoteComponent.targetY;
         targetLine = new Line(FXGL.getAppWidth() * 0.515, targetY, FXGL.getAppWidth() * 0.925, targetY);
         targetLine.setStroke(Color.BLACK);
