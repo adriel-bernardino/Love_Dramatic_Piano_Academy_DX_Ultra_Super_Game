@@ -22,6 +22,7 @@ public class NoteComponent {
     public static final double hitTolerance = FXGL.getAppHeight() * 0.015;
     public static final double defaultTravelTime = 3.0;
     public static final double minTravelTime = 2.0;
+    public static final double specialNoteInterval = 0.2;
     NoteComponent(double timestamp, String note, double travelTime){
         this.timestamp = timestamp;
         this.note = note;

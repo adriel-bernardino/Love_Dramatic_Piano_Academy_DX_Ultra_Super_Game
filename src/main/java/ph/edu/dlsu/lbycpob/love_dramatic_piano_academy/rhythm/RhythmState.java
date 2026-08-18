@@ -66,12 +66,14 @@ public class RhythmState {
                     double travelTime = getTravelTime();
                     double spawnTime = data.getTimestamp() - travelTime;
                     if (currentTime >= spawnTime) {
-                        for (String note : data.getNotes()) {
-                            NoteComponent noteComponent = new NoteComponent(data.getTimestamp(), note, travelTime);
-                            noteComponents.add(noteComponent);
-                            FXGL.addUINode(noteComponent.getVisualNote());
-                        }
-                        nextBeatmapIndex++;
+                        List<String> notes = data.getNotes();
+                        for (int i = 0; i < notes.size(); i++) {
+                            String note = notes.get(i);
+                            double noteTimestamp = data.getTimestamp();
+                            if (data.getType() == BeatMapParser.NoteType.OCTAVE || data.getType() == BeatMapParser.NoteType.ARPEGGIO) {
+                                noteTimestamp += i * NoteComponent.specialNoteInterval;}
+                                NoteComponent noteComponent = new NoteComponent(noteTimestamp, note, travelTime);noteComponents.add(noteComponent);
+                                FXGL.addUINode(noteComponent.getVisualNote());}nextBeatmapIndex++;
                     }
                 }
                 Iterator<NoteComponent> iterator = noteComponents.iterator();
@@ -106,12 +108,17 @@ public class RhythmState {
     }
     private double getTravelTime() {
         double progress = getSongProgress();
-        return NoteComponent.defaultTravelTime
-                + (NoteComponent.minTravelTime
-                - NoteComponent.defaultTravelTime) * progress;
+        return NoteComponent.defaultTravelTime + (NoteComponent.minTravelTime - NoteComponent.defaultTravelTime) * progress;
     }
     private double getCurrentTime(){
         return (System.nanoTime()-startTime)/1_000_000_000.0;
+    }
+
+    private void clearNotes() {
+        for (NoteComponent note : noteComponents) {
+            FXGL.removeUINode(note.getVisualNote());
+        }
+        noteComponents.clear();
     }
 
     private void finishDummyRhythm() {
@@ -121,43 +128,23 @@ public class RhythmState {
         }
         sceneManager.switchToVisualNovelAtLine(storedResumeLine);
     }
-
     private void checkKeyPress(KeyCode key) {
 
-        Iterator<NoteComponent> iterator =
-                noteComponents.iterator();
-
-        while (iterator.hasNext()) {
-
-            NoteComponent note = iterator.next();
-
-            double noteCenterY =
-                    note.getVisualNote().getY()
-                            + NoteComponent.noteHeight / 2;
-
-            boolean hittable =
-                    Math.abs(
-                            noteCenterY
-                                    - NoteComponent.targetY
-                    ) <= NoteComponent.hitTolerance;
-
-            if (hittable &&
-                    keyboardMapping.matches(
-                            key,
-                            note.getNote()
-                    )) {
-
-                System.out.println("HIT: " + note.getNote()
-                );
-                FXGL.removeUINode(note.getVisualNote()
-                );
-                iterator.remove();
+        Iterator<NoteComponent> iterator = noteComponents.iterator();
+        while (iterator.hasNext()) {NoteComponent note = iterator.next();double noteCenterY = note.getVisualNote().getY() + NoteComponent.noteHeight / 2;
+            boolean hittable = Math.abs(noteCenterY - NoteComponent.targetY) <= NoteComponent.hitTolerance;
+            if (hittable && keyboardMapping.matches(key, note.getNote())) {
+                System.out.println("HIT: " + note.getNote());FXGL.removeUINode(note.getVisualNote());iterator.remove();
                 return;
             }
         }
     }
 
     public void cleanup() {
+        if (noteMovement != null) {
+            noteMovement.stop();
+            noteMovement = null;
+        }
         if (subText != null) {
             FXGL.removeUINode(subText);
             subText = null;
@@ -170,6 +157,7 @@ public class RhythmState {
             autoReturnTimer.expire();
             autoReturnTimer = null;
         }
+        clearNotes();
         if (pianoKeyOverlay != null) {
             pianoKeyOverlay.cleanup();
             pianoKeyOverlay = null;
