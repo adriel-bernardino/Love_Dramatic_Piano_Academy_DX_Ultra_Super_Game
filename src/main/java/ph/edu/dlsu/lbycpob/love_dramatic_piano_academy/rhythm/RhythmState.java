@@ -32,6 +32,7 @@ public class RhythmState {
     private  List<BeatMapParser.NoteData> beatmapNotes;
     private AnimationTimer noteMovement;
     private long startTime;
+    private int nextBeatmapIndex = 0;
 
     public RhythmState(CoreSceneManager sceneManager) {
         this.sceneManager = sceneManager;
@@ -46,8 +47,29 @@ public class RhythmState {
         beatMapParser = new BeatMapParser();
         beatMapParser.loadBeatMap("beatmap_part2");
         beatmapNotes = beatMapParser.getNoteData();
+        nextBeatmapIndex = 0;
         audioManager.playMusic(songTrack);
         startTime  = System.nanoTime();
+        noteMovement = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                double currentTime = getCurrentTime();
+                if (nextBeatmapIndex<beatmapNotes.size()){
+                    BeatMapParser.NoteData data = beatmapNotes.get(nextBeatmapIndex);
+                    double travelTime = NoteComponent.defaultTravelTime;
+                    double spawnTime = data.getTimestamp() - travelTime;
+                if (currentTime >= spawnTime) {
+                    for (String note:data.getNotes()){
+                        NoteComponent noteComponent = new NoteComponent(data.getTimestamp(),note);
+                        noteComponents.add(noteComponent);
+                        FXGL.addUINode(noteComponent.getVisualNote());
+                    }
+                    nextBeatmapIndex++;
+                }
+            }
+        }
+        };
+        noteMovement.start();
     }
     private double getCurrentTime(){
         return (System.nanoTime()-startTime)/1_000_000_000.0;
