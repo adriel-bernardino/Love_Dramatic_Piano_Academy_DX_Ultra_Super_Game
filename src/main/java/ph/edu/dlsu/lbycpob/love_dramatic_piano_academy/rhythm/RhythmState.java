@@ -67,6 +67,16 @@ public class RhythmState {
                     nextBeatmapIndex++;
                 }
             }
+                for (NoteComponent note: noteComponents){
+                    double travelTime = NoteComponent.defaultTravelTime;
+                    double spawnTime = note.getTimestamp() - travelTime;
+                    double progress = (currentTime-spawnTime)/travelTime;
+                    progress = Math.max(0,Math.min(1,progress));
+                    double startY = NoteComponent.spawnY;
+                    double targetY = NoteComponent.targetY - NoteComponent.noteHeight/2;
+                    double currentY = startY + (targetY-startY)*progress;
+                    note.setY(currentY);
+                }
         }
         };
         noteMovement.start();
