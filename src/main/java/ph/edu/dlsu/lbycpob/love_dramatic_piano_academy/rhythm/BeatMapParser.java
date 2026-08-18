@@ -51,10 +51,10 @@ public class BeatMapParser {
         }
     }
     private NoteType detectNoteType(String note) {
-        if (note.contains("Octave")) {
-            return NoteType.OCTAVE;
-        } else if (note.contains("Arpeggio")) {
+        if (note.contains("Arpeggio")) {
             return NoteType.ARPEGGIO;
+        } else if (note.contains("(Octave)")) {
+            return NoteType.OCTAVE;
         } else if (note.contains("+")) {
             return NoteType.CHORD;
         }
@@ -75,17 +75,12 @@ public class BeatMapParser {
         switch (type) {
             case SINGLE:
                 return List.of(note);
-
             case CHORD:
-
                 return extractChord(note);
-
             case OCTAVE:
                 return extractOctave(note);
-
             case ARPEGGIO:
                 return extractArpeggio(note);
-
             default:
                 return List.of();
         }
@@ -108,14 +103,15 @@ public class BeatMapParser {
     }
 
     public List<String>extractOctave(String note){
-        String cleanNote = note.replace("Octave","").trim();
+        String cleanNote = note.replace("(Octave)","").trim();
         return octaveMapping.get(cleanNote);
     }
     public void loadBeatMap(String filename) {
         try {
-            InputStream ibm = getClass().getResourceAsStream("/assets/Beatmap/" + filename);
+            InputStream ibm = getClass().getResourceAsStream("/assets/Beatmap/" + filename + ".txt");
             if (ibm == null) {
                 System.err.println("Script missing at: /assets/Beatmap/" + filename);
+                return;
             }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(ibm));
@@ -131,6 +127,7 @@ public class BeatMapParser {
 
                 String noteString = trimmed.substring(9);
                 NoteType type = detectNoteType(noteString);
+                List<String> extractedNotes = extractNotes(noteString, type);
                 NoteData noteData = new NoteData(timestamp, extractNotes(noteString,type),type);
                 notes.add(noteData);
             }

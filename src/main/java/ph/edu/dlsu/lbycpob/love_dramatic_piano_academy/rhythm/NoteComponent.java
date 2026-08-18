@@ -38,7 +38,7 @@ public class NoteComponent {
         noteLaneMapping.put(List.of("G#3","G#4"),8);
         noteLaneMapping.put(List.of("A3","A4"),9);
         noteLaneMapping.put(List.of("A#4"),10);
-        noteLaneMapping.put(List.of("B4"),11);
+        noteLaneMapping.put(List.of("B3","B4"),11);
         noteLaneMapping.put(List.of("C5"),12);
         noteLaneMapping.put(List.of("C#5"),13);
         noteLaneMapping.put(List.of("D5"),14);
@@ -47,12 +47,21 @@ public class NoteComponent {
     }
 
     private static int getLaneForNote(String note) {
+//        for (Map.Entry<List<String>, Integer> entry : noteLaneMapping.entrySet()) {
+//            if (entry.getKey().contains(note)) {
+//                return entry.getValue();
+//            }
+//        }
+//        throw new IllegalArgumentException("No lane found for note: " + note);
+        note = note.trim();
+
         for (Map.Entry<List<String>, Integer> entry : noteLaneMapping.entrySet()) {
             if (entry.getKey().contains(note)) {
                 return entry.getValue();
             }
         }
-        throw new IllegalArgumentException("No lane found for note: " + note);
+
+        throw new IllegalArgumentException("No lane found for note: [" + note + "]");
     }
 
     private static final double[] LANE_X = {
