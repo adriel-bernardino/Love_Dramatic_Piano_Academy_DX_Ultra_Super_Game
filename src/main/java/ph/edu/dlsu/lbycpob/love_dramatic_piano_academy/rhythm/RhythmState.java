@@ -37,6 +37,9 @@ public class RhythmState {
     private long startTime;
     private int nextBeatmapIndex = 0;
 
+    private static final int MAX_LIVES = 10;
+    private int lives = MAX_LIVES;
+
     public RhythmState(CoreSceneManager sceneManager) {
         this.sceneManager = sceneManager;
         this.audioManager = GlobalAudioManager.getInstance();
@@ -45,11 +48,17 @@ public class RhythmState {
     public void start(List<String> dialogueLines, int resumeLineIndex, String songTrack) {
         FXGL.spawn("background", new SpawnData(0, 0).put("imageName", "Rhythmbgs/rhythmSolo.png"));
         this.storedResumeLine = resumeLineIndex;
+        lives = MAX_LIVES;
         pianoKeyOverlay = new PianoKeyOverlay();
         keyboardMapping = new KeyboardMapping();
         beatMapParser = new BeatMapParser();
         beatMapParser.loadBeatMap("beatmap_part2");
         beatmapNotes = beatMapParser.getNoteData();
+        if (beatmapNotes.isEmpty()) {
+            System.err.println("Beatmap contains no notes.");
+            finishDummyRhythm();
+            return;
+        }
         nextBeatmapIndex = 0;
         audioManager.playMusic(songTrack);
         startTime  = System.nanoTime();
@@ -57,6 +66,12 @@ public class RhythmState {
             @Override
             public void handle(long now) {
                 double currentTime = getCurrentTime();
+                double finalTimestamp = beatmapNotes.get(beatmapNotes.size() - 1).getTimestamp();
+
+                if (currentTime >= finalTimestamp + 1.0) {
+                    finishDummyRhythm();
+                    return;
+                }
                 KeyCode key = pianoKeyOverlay.consumeKeyPress();
                 if (key!=null){
                     checkKeyPress(key);
@@ -89,8 +104,14 @@ public class RhythmState {
                     double noteCenterY = note.getVisualNote().getY() + NoteComponent.noteHeight / 2;
                     if (noteCenterY > NoteComponent.missY) {
                         System.out.println("MISS: " + note.getNote());
+                        showFeedback("MISS!", Color.RED);
+                        loseLife();
                         FXGL.removeUINode(note.getVisualNote());
                         iterator.remove();
+                        if (lives <= 0) {
+                            finishDummyRhythm();
+                            return;
+                        }
                     }
                 }
         }
@@ -113,28 +134,43 @@ public class RhythmState {
     private double getCurrentTime(){
         return (System.nanoTime()-startTime)/1_000_000_000.0;
     }
-
     private void clearNotes() {
         for (NoteComponent note : noteComponents) {
             FXGL.removeUINode(note.getVisualNote());
         }
         noteComponents.clear();
     }
-
     private void finishDummyRhythm() {
+        if (noteMovement != null) {
+            noteMovement.stop();
+            noteMovement = null;
+        }
         if (autoReturnTimer != null) {
             autoReturnTimer.expire();
             autoReturnTimer = null;
         }
+        clearNotes();
+        if (pianoKeyOverlay != null) {
+            pianoKeyOverlay.cleanup();pianoKeyOverlay = null;
+        }
         sceneManager.switchToVisualNovelAtLine(storedResumeLine);
     }
-    private void checkKeyPress(KeyCode key) {
+    private void loseLife() {
+        lives--;
+        System.out.println("LIFE LOST | Remaining: " + lives);
+        if (lives <= 0) {
+            System.out.println("GAME OVER");
+        }
+    }
 
+    private void checkKeyPress(KeyCode key) {
         Iterator<NoteComponent> iterator = noteComponents.iterator();
         while (iterator.hasNext()) {NoteComponent note = iterator.next();double noteCenterY = note.getVisualNote().getY() + NoteComponent.noteHeight / 2;
             boolean hittable = Math.abs(noteCenterY - NoteComponent.targetY) <= NoteComponent.hitTolerance;
             if (hittable && keyboardMapping.matches(key, note.getNote())) {
-                System.out.println("HIT: " + note.getNote());FXGL.removeUINode(note.getVisualNote());iterator.remove();
+                System.out.println("HIT: " + note.getNote());
+                showFeedback("HIT!", Color.LIMEGREEN);
+                FXGL.removeUINode(note.getVisualNote());iterator.remove();
                 return;
             }
         }
@@ -162,5 +198,16 @@ public class RhythmState {
             pianoKeyOverlay.cleanup();
             pianoKeyOverlay = null;
         }
+    }
+    private void showFeedback(String message, Color color) {
+        Text feedback = FXGL.getUIFactoryService().newText(message, 32);
+        feedback.setFill(color);
+        feedback.setTranslateX(FXGL.getAppWidth() * 0.45);
+        feedback.setTranslateY(FXGL.getAppHeight() * 0.60);
+        FXGL.addUINode(feedback);
+        FXGL.getGameTimer().runOnceAfter(
+                () -> FXGL.removeUINode(feedback),
+                Duration.seconds(0.5)
+        );
     }
 }
