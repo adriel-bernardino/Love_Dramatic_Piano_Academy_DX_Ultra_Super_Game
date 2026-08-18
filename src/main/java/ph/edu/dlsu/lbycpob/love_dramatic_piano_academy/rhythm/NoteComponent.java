@@ -16,6 +16,11 @@ public class NoteComponent {
     public static final double noteWidth = FXGL.getAppWidth() * 0.0104;
     public static final double noteHeight = FXGL.getAppHeight() * 0.0370;
     public static final double spawnY = FXGL.getAppHeight()*0.01;
+    public static final double targetY = FXGL.getAppHeight() * 0.650;
+    public static final double missY = FXGL.getAppHeight() * 0.720;
+    public static final double hitTolerance = FXGL.getAppHeight() * 0.015;
+    public static final double defaultTravelTime = 2.0;
+    public static final double minTravelTime = 1;
     NoteComponent(double timestamp, String note){
         this.timestamp = timestamp;
         this.note = note;
