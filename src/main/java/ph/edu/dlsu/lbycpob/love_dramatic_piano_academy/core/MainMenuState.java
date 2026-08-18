@@ -15,6 +15,8 @@ import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
 public class MainMenuState {
     private Text titleText;
     private VBox menuBox;
+    private Button settingsBtn;
+    private SettingsPanel settingsPanel;
 
     // Understand: Holds a reference to the controller interface
     private final CoreSceneManager sceneController;
@@ -62,6 +64,15 @@ public class MainMenuState {
         loadGameBtn.setStyle(buttonStyle);
         quitBtn.setStyle(buttonStyle);
 
+        settingsBtn = FXGL.getUIFactoryService().newButton("Settings");
+        settingsBtn.setStyle(buttonStyle);
+        settingsBtn.setOnAction(e -> {
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
+            settingsPanel = new SettingsPanel();
+            settingsPanel.show(null);
+        });
+
         // Understand: Set Button Actions
         newGameBtn.setOnAction(e -> {
             GlobalAudioManager.getInstance()
@@ -93,8 +104,7 @@ public class MainMenuState {
             FXGL.getGameController().exit();
         });
 
-        // Understand: Layout the Buttons in a Vertical Box, ensuring inner items are centered
-        menuBox = new VBox(15, newGameBtn, loadGameBtn, quitBtn);
+        menuBox = new VBox(15, newGameBtn, loadGameBtn, settingsBtn, quitBtn);
         menuBox.setAlignment(Pos.CENTER);
 
         // Understand: Position the VBox horizontally centered, and a little below the vertical center
@@ -113,6 +123,9 @@ public class MainMenuState {
         }
         if (menuBox != null) {
             FXGL.removeUINode(menuBox);
+        }
+        if (settingsPanel != null) {
+            settingsPanel.hide();
         }
     }
 }
