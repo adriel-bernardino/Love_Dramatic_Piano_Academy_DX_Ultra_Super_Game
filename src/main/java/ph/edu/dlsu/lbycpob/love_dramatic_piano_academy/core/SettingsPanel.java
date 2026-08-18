@@ -7,6 +7,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
 
@@ -22,14 +24,18 @@ public class SettingsPanel {
         FXGL.addUINode(dimOverlay);
 
         Text title = new Text("Settings");
+        title.setFont(Font.font("Palatino", FontWeight.BOLD, 24));
+        title.setFill(Color.WHITE);
 
         Text musicLabel = new Text("Music Volume");
+        musicLabel.setFill(Color.WHITE);
         Slider musicSlider = new Slider(0, 1, GlobalAudioManager.getInstance().getMusicVolume());
         musicSlider.valueProperty().addListener((obs, oldV, newV) ->
                 GlobalAudioManager.getInstance().setMusicVolume(newV.doubleValue()));
         musicSlider.setOnMouseReleased(e -> GlobalAudioManager.getInstance().saveVolumeSettings());
 
         Text sfxLabel = new Text("SFX Volume");
+        sfxLabel.setFill(Color.WHITE);
         Slider sfxSlider = new Slider(0, 1, GlobalAudioManager.getInstance().getSfxVolume());
         sfxSlider.valueProperty().addListener((obs, oldV, newV) ->
                 GlobalAudioManager.getInstance().setSfxVolume(newV.doubleValue()));
