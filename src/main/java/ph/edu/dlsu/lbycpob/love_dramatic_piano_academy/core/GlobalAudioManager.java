@@ -20,6 +20,8 @@ public class GlobalAudioManager implements AudioService {
     private String currentTrackName = "";
     private double currentSpeed = 1.0;
     private boolean isPaused = false;
+    private double musicVolume = 0.5;
+    private double sfxVolume = 0.5;
 
     //understand: stores already loaded sound effects so they can play immediately
     private final Map<SoundEffect, AudioClip> soundEffects =
@@ -55,6 +57,10 @@ public class GlobalAudioManager implements AudioService {
 
             //decision: AudioClip for short sounds because it can play w/o creating new MediaPlayer every time
             AudioClip clip = new AudioClip(resource.toExternalForm());
+            clip.setVolume(sfxVolume);//understand: apply current sfx volume to newly loaded clip
+
+            //understand: store the loaded clip so it can be reused immediately
+            soundEffects.put(effect, clip);
 
             //understand: store the loaded clip so it can be reused immediately
             soundEffects.put(effect, clip);
@@ -84,6 +90,7 @@ public class GlobalAudioManager implements AudioService {
             Media media = new Media(resource.toExternalForm());
             mediaPlayer = new MediaPlayer(media);
             mediaPlayer.setRate(currentSpeed);
+            mediaPlayer.setVolume(musicVolume);//understand: apply current music volume to new track
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             mediaPlayer.play();
 
@@ -151,6 +158,33 @@ public class GlobalAudioManager implements AudioService {
             mediaPlayer.setRate(speed);
             System.out.println("Playback speed set to: " + speed + "x");
         }
+    }
+
+    @Override
+    public void setMusicVolume(double volume) {
+        this.musicVolume = volume;
+        if (mediaPlayer != null) {
+            mediaPlayer.setVolume(volume);
+        }
+    }
+
+    @Override
+    public double getMusicVolume() {
+        return musicVolume;
+    }
+
+    @Override
+    public void setSfxVolume(double volume) {
+        this.sfxVolume = volume;
+        //understand: applies to every alrdy loaded clip immediately
+        for (AudioClip clip : soundEffects.values()) {
+            clip.setVolume(volume);
+        }
+    }
+
+    @Override
+    public double getSfxVolume() {
+        return sfxVolume;
     }
 
     // Understand: Crucial for Rhythm Game note-fall sync and timing verification
