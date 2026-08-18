@@ -32,6 +32,11 @@ public class SettingsPanel {
         Slider sfxSlider = new Slider(0, 1, GlobalAudioManager.getInstance().getSfxVolume());
         sfxSlider.valueProperty().addListener((obs, oldV, newV) ->
                 GlobalAudioManager.getInstance().setSfxVolume(newV.doubleValue()));
+        sfxSlider.setOnMouseReleased(e -> {
+            //understand: sfx can't be heard just by moving the slider like music can, so play a sample sound and save on release
+            GlobalAudioManager.getInstance().playSoundEffect(SoundEffect.LOAD_SUCCESS);
+            GlobalAudioManager.getInstance().saveVolumeSettings();
+        });
 
         Button closeBtn = FXGL.getUIFactoryService().newButton("Close");
         closeBtn.setOnAction(e -> {
