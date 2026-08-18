@@ -27,6 +27,7 @@ public class SettingsPanel {
         Slider musicSlider = new Slider(0, 1, GlobalAudioManager.getInstance().getMusicVolume());
         musicSlider.valueProperty().addListener((obs, oldV, newV) ->
                 GlobalAudioManager.getInstance().setMusicVolume(newV.doubleValue()));
+        musicSlider.setOnMouseReleased(e -> GlobalAudioManager.getInstance().saveVolumeSettings());
 
         Text sfxLabel = new Text("SFX Volume");
         Slider sfxSlider = new Slider(0, 1, GlobalAudioManager.getInstance().getSfxVolume());
