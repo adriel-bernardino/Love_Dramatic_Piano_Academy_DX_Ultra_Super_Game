@@ -6,6 +6,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PianoKeyOverlay {
     private KeyCode keyPressed;
 
@@ -27,6 +30,8 @@ public class PianoKeyOverlay {
     private Rectangle uOverlay;
     private Rectangle oOverlay;
     private Rectangle pOverlay;
+
+    private final List<UserAction> actions = new ArrayList<>();
 
     public PianoKeyOverlay() {
         int appHeight = FXGL.getAppHeight();
@@ -156,244 +161,232 @@ public class PianoKeyOverlay {
         FXGL.addUINode(tOverlay);
         FXGL.addUINode(eOverlay);
         FXGL.addUINode(wOverlay);
-        FXGL.getInput().addAction(
-                new UserAction("A Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        aOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.A);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        aOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.A
-        );
-        FXGL.getInput().addAction(
-                new UserAction("S Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        sOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.S);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        sOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.S
-        );
-        FXGL.getInput().addAction(
-                new UserAction("D Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        dOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.D);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        dOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.D
-        );
-        FXGL.getInput().addAction(
-                new UserAction("F Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        fOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.F);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        fOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.F
-        );
-        FXGL.getInput().addAction(
-                new UserAction("G Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        gOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.G);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        gOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.G
-        );
-        FXGL.getInput().addAction(
-                new UserAction("H Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        hOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.H);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        hOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.H
-        );
-        FXGL.getInput().addAction(
-                new UserAction("J Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        jOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.J);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        jOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.J
-        );
-        FXGL.getInput().addAction(
-                new UserAction("K Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        kOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.K);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        kOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.K
-        );
-        FXGL.getInput().addAction(
-                new UserAction("L Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        lOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.L);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        lOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.L
-        );
-        FXGL.getInput().addAction(
-                new UserAction("Semi-col Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        colOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.SEMICOLON);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        colOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.SEMICOLON
-        );
-        FXGL.getInput().addAction(
-                new UserAction("W Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        wOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.W);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        wOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.W
-        );
-        FXGL.getInput().addAction(
-                new UserAction("E Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        eOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.E);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        eOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.E
-        );
-        FXGL.getInput().addAction(
-                new UserAction("T Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        tOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.T);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        tOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.T
-        );
-        FXGL.getInput().addAction(
-                new UserAction("Y Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        yOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.Y);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        yOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.Y
-        );
-        FXGL.getInput().addAction(
-                new UserAction("U Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        uOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.U);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        uOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.U
-        );
-        FXGL.getInput().addAction(
-                new UserAction("O Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        oOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.O);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        oOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.O
-        );
-        FXGL.getInput().addAction(
-                new UserAction("P Highlight") {
-                    @Override
-                    protected void onActionBegin() {
-                        pOverlay.setOpacity(1);
-                        keyPressStorage(KeyCode.P);
-                    }
-                    @Override
-                    protected void onActionEnd() {
-                        pOverlay.setOpacity(0);
-                    }
-                },
-                KeyCode.P
-        );
+
+        UserAction aAction= new UserAction("A Highlight") {
+            @Override
+            protected void onActionBegin() {
+                aOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.A);
+            }
+            @Override
+            protected void onActionEnd() {
+                aOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(aAction, KeyCode.A);
+        actions.add(aAction);
+
+        UserAction SAction= new UserAction("S Highlight") {
+            @Override
+            protected void onActionBegin() {
+                sOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.S);
+            }
+            @Override
+            protected void onActionEnd() {
+                sOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(SAction, KeyCode.S);
+        actions.add(SAction);
+
+        UserAction dAction= new UserAction("D Highlight") {
+            @Override
+            protected void onActionBegin() {
+                dOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.D);
+            }
+            @Override
+            protected void onActionEnd() {
+                dOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(dAction, KeyCode.D);
+        actions.add(dAction);
+
+
+        UserAction FAction= new UserAction("F Highlight") {
+            @Override
+            protected void onActionBegin() {
+                fOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.F);
+            }
+            @Override
+            protected void onActionEnd() {
+                fOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(FAction, KeyCode.F);
+        actions.add(FAction);
+
+
+        UserAction gaction= new UserAction("G Highlight") {
+            @Override
+            protected void onActionBegin() {
+                gOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.G);
+            }
+            @Override
+            protected void onActionEnd() {
+                gOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(gaction, KeyCode.G);
+        actions.add(gaction);
+
+        UserAction HAction= new UserAction("H Highlight") {
+            @Override
+            protected void onActionBegin() {
+                hOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.H);
+            }
+            @Override
+            protected void onActionEnd() {
+                hOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(HAction, KeyCode.H);
+        actions.add(HAction);
+
+        UserAction JAction= new UserAction("J Highlight") {
+            @Override
+            protected void onActionBegin() {
+                jOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.J);
+            }
+            @Override
+            protected void onActionEnd() {
+                jOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(JAction, KeyCode.J);
+        actions.add(JAction);
+
+        UserAction KAction= new UserAction("K Highlight") {
+            @Override
+            protected void onActionBegin() {
+                kOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.K);
+            }
+            @Override
+            protected void onActionEnd() {
+                kOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(KAction, KeyCode.K);
+        actions.add(KAction);
+
+        UserAction LAction= new UserAction("L Highlight") {
+            @Override
+            protected void onActionBegin() {
+                lOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.L);
+            }
+            @Override
+            protected void onActionEnd() {
+                lOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(LAction, KeyCode.L);
+        actions.add(LAction);
+
+        UserAction SemiAction= new UserAction("Semicol Highlight") {
+            @Override
+            protected void onActionBegin() {
+                colOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.SEMICOLON);
+            }
+            @Override
+            protected void onActionEnd() {
+                colOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(SemiAction, KeyCode.SEMICOLON);
+        actions.add(SemiAction);
+
+
+        UserAction WAction= new UserAction("W Highlight") {
+            @Override
+            protected void onActionBegin() {
+                wOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.W);
+            }
+            @Override
+            protected void onActionEnd() {
+                wOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(WAction, KeyCode.W);
+        actions.add(WAction);
+        UserAction TAction= new UserAction("T Highlight") {
+            @Override
+            protected void onActionBegin() {
+                tOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.T);
+            }
+            @Override
+            protected void onActionEnd() {
+                tOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(TAction, KeyCode.T);
+        actions.add(TAction);
+
+        UserAction YAction= new UserAction("Y Highlight") {
+            @Override
+            protected void onActionBegin() {
+                yOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.Y);
+            }
+            @Override
+            protected void onActionEnd() {
+                yOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(YAction, KeyCode.Y);
+        actions.add(YAction);
+
+        UserAction UAction= new UserAction("U Highlight") {
+            @Override
+            protected void onActionBegin() {
+                uOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.U);
+            }
+            @Override
+            protected void onActionEnd() {
+                uOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(UAction, KeyCode.U);
+        actions.add(UAction);
+
+        UserAction OAction= new UserAction("O Highlight") {
+            @Override
+            protected void onActionBegin() {
+                oOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.O);
+            }
+            @Override
+            protected void onActionEnd() {
+                oOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(OAction, KeyCode.O);
+        actions.add(OAction);
+
+        UserAction PAction= new UserAction("P Highlight") {
+            @Override
+            protected void onActionBegin() {
+                pOverlay.setOpacity(1);
+                keyPressStorage(KeyCode.P);
+            }
+            @Override
+            protected void onActionEnd() {
+                pOverlay.setOpacity(0);
+            }
+        };
+        FXGL.getInput().addAction(PAction, KeyCode.P);
+        actions.add(PAction);
     }
     public void keyPressStorage(KeyCode key){
         keyPressed = key;
@@ -407,24 +400,24 @@ public class PianoKeyOverlay {
         return keyPressed;
     }
 
-    public void cleanup(){
-        FXGL.removeUINode(aOverlay);
-        FXGL.removeUINode(sOverlay);
-        FXGL.removeUINode(dOverlay);
-        FXGL.removeUINode(fOverlay);
-        FXGL.removeUINode(gOverlay);
-        FXGL.removeUINode(hOverlay);
-        FXGL.removeUINode(jOverlay);
-        FXGL.removeUINode(kOverlay);
-        FXGL.removeUINode(lOverlay);
-        FXGL.removeUINode(colOverlay);
+    public void hide() {
+        aOverlay.setOpacity(0);
+        sOverlay.setOpacity(0);
+        dOverlay.setOpacity(0);
+        fOverlay.setOpacity(0);
+        gOverlay.setOpacity(0);
+        hOverlay.setOpacity(0);
+        jOverlay.setOpacity(0);
+        kOverlay.setOpacity(0);
+        lOverlay.setOpacity(0);
+        colOverlay.setOpacity(0);
 
-        FXGL.removeUINode(wOverlay);
-        FXGL.removeUINode(eOverlay);
-        FXGL.removeUINode(tOverlay);
-        FXGL.removeUINode(yOverlay);
-        FXGL.removeUINode(uOverlay);
-        FXGL.removeUINode(oOverlay);
-        FXGL.removeUINode(pOverlay);
+        wOverlay.setOpacity(0);
+        eOverlay.setOpacity(0);
+        tOverlay.setOpacity(0);
+        yOverlay.setOpacity(0);
+        uOverlay.setOpacity(0);
+        oOverlay.setOpacity(0);
+        pOverlay.setOpacity(0);
     }
 }
