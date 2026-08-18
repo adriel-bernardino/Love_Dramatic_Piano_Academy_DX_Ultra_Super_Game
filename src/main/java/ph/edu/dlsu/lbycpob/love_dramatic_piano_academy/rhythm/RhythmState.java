@@ -63,7 +63,11 @@ public class RhythmState {
         createLifeDisplay();
         keyboardMapping = new KeyboardMapping();
         beatMapParser = new BeatMapParser();
-        beatMapParser.loadBeatMap("beatmap_part2");
+        if (songTrack.contains("Intro")){
+            beatMapParser.loadBeatMap("beatmap_part1");
+        }else {
+            beatMapParser.loadBeatMap("beatmap_part2");
+        }
         beatmapNotes = beatMapParser.getNoteData();
         if (beatmapNotes.isEmpty()) {
             System.err.println("Beatmap contains no notes.");
