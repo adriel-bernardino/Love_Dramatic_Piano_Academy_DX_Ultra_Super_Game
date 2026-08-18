@@ -81,6 +81,21 @@ public class RhythmState {
         };
         noteMovement.start();
     }
+
+    private double getSongProgress(){
+        double songDuration = beatmapNotes.get(beatmapNotes.size() - 1).getTimestamp();
+        if (songDuration<=0){
+            return 0;
+        }
+        double progress = getCurrentTime()/songDuration;
+        return Math.max(0, Math.min(1, progress));
+    }
+    private double getTravelTime() {
+        double progress = getSongProgress();
+        return NoteComponent.defaultTravelTime
+                + (NoteComponent.minTravelTime
+                - NoteComponent.defaultTravelTime) * progress;
+    }
     private double getCurrentTime(){
         return (System.nanoTime()-startTime)/1_000_000_000.0;
     }
