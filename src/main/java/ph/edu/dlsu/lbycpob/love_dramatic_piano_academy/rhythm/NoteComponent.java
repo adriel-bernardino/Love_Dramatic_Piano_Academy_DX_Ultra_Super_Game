@@ -3,6 +3,10 @@ package ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.rhythm;
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.scene.shape.Rectangle;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class NoteComponent {
     private double timestamp;
     private String note;
@@ -12,13 +16,71 @@ public class NoteComponent {
     public static final double noteWidth = FXGL.getAppWidth() * 0.0104;
     public static final double noteHeight = FXGL.getAppHeight() * 0.0370;
     public static final double spawnY = FXGL.getAppHeight()*0.01;
-    NoteComponent(double timestamp, String note, int lane){
+    NoteComponent(double timestamp, String note){
         this.timestamp = timestamp;
         this.note = note;
-        this.lane = lane;
+        this.lane = getLaneForNote(note);
 
         VisualNote = new Rectangle(noteWidth,noteHeight);
+        VisualNote.setX(getlaneX(this.lane));
         VisualNote.setY(spawnY);
+    }
+    private static final Map<List<String>,Integer> noteLaneMapping = new HashMap<>();
+    static{
+        noteLaneMapping.put(List.of("B#3","C4"),0);
+        noteLaneMapping.put(List.of("C#4"),1);
+        noteLaneMapping.put(List.of("D4"),2);
+        noteLaneMapping.put(List.of("D#4"),3);
+        noteLaneMapping.put(List.of("E4"),4);
+        noteLaneMapping.put(List.of("E5"), 5);
+        noteLaneMapping.put(List.of("F#3","F#4"),6);
+        noteLaneMapping.put(List.of("G4"),7);
+        noteLaneMapping.put(List.of("G#3","G#4"),8);
+        noteLaneMapping.put(List.of("A3","A4"),9);
+        noteLaneMapping.put(List.of("A#4"),10);
+        noteLaneMapping.put(List.of("B4"),11);
+        noteLaneMapping.put(List.of("C5"),12);
+        noteLaneMapping.put(List.of("C#5"),13);
+        noteLaneMapping.put(List.of("D5"),14);
+        noteLaneMapping.put(List.of("D#5"),15);
+        noteLaneMapping.put(List.of("F5"),16);
+    }
+
+    private static int getLaneForNote(String note) {
+        for (Map.Entry<List<String>, Integer> entry : noteLaneMapping.entrySet()) {
+            if (entry.getKey().contains(note)) {
+                return entry.getValue();
+            }
+        }
+        throw new IllegalArgumentException("No lane found for note: " + note);
+    }
+
+    private static final double[] LANE_X = {
+            0.526,  // A
+            0.546,  // W
+            0.566,  // S
+            0.586,  // E
+            0.605,  // D
+            0.638,  // F
+            0.658,  // T
+            0.676,  // G
+            0.694,  // Y
+            0.7125, // H
+            0.731,  // U
+            0.751,  // J
+            0.786,  // K
+            0.806,  // O
+            0.8245, // L
+            0.843,  // P
+            0.863   // ;
+    };
+
+    private double getlaneX(int lane) {
+        if (lane < 0 || lane >= LANE_X.length) {
+            throw new IllegalArgumentException("Invalid lane: " + lane);
+        }
+
+        return FXGL.getAppWidth() * LANE_X[lane];
     }
 
     public double getTimestamp() {
