@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.GlobalAudioManager;
 import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.shared.SoundEffect;
+import ph.edu.dlsu.lbycpob.love_dramatic_piano_academy.core.SettingsPanel;
 
 // Understand: Single reusable owner of dialogue UI and speaker tag management
 public class DialogueManager {
@@ -26,7 +27,7 @@ public class DialogueManager {
     private HBox buttonBar;
 
     // Understand: Top-right visual controls for quick manual navigation and automated fast forwarding
-    private Button nextBtn, fastForwardBtn;
+    private Button nextBtn, fastForwardBtn, settingsBtn;
     private boolean isFastForwarding = false;
 
     private String targetText = "";
@@ -138,7 +139,15 @@ public class DialogueManager {
             if (onQuit != null) onQuit.run();
         });
 
-        buttonBar = new HBox(10, skipBtn, new Text("|"), saveBtn, new Text("|"), quitBtn);
+        settingsBtn = FXGL.getUIFactoryService().newButton("Settings");
+        settingsBtn.setEffect(darken);
+        settingsBtn.setOnAction(e -> {
+            GlobalAudioManager.getInstance()
+                    .playSoundEffect(SoundEffect.BUTTON_CLICK);//understand: play sfx
+            new SettingsPanel().show(null);
+        });
+
+        buttonBar = new HBox(10, skipBtn, new Text("|"), saveBtn, new Text("|"), quitBtn, new Text("|"), settingsBtn);
         buttonBar.setAlignment(Pos.CENTER);
         buttonBar.setPrefWidth(BOX_WIDTH);
         buttonBar.setTranslateX(BOX_MARGIN_X);
